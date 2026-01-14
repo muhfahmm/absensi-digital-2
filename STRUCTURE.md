@@ -9,6 +9,7 @@ absensi-digital-2/
 │   ├── admin/             # [WEBSITE] Halaman Admin Panel (PHP Native)
 │   │   ├── index.php      # Dashboard Utama (Protected)
 │   │   ├── login.php      # Halaman Login Admin
+│   │   ├── register.php   # Halaman Registrasi Admin Baru
 │   │   ├── logout.php     # Script Logout
 │   │   ├── config/        # Koneksi Database & Konfigurasi
 │   │   │   ├── database.php
@@ -23,7 +24,8 @@ absensi-digital-2/
 │   │   │   │   ├── create.php
 │   │   │   │   └── edit.php
 │   │   │   ├── guru/
-│   │   │   │   └── data_guru.php
+│   │   │   │   ├── data_guru.php
+│   │   │   │   └── create.php
 │   │   │   ├── karyawan/
 │   │   │   │   └── data_karyawan.php
 │   │   │   ├── kelas/

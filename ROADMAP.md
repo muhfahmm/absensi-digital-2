@@ -36,11 +36,11 @@ Dokumen ini berisi tahapan pengembangan aplikasi Absensi Digital dari awal hingg
     - [ ] Tab Izin (Form Upload).
     - [ ] Tab Profil.
 
-## Phase 4: Core Logic Implementation
-- [ ] Logika Validasi Absensi (Cek jam masuk/pulang, cek duplikasi absen).
-- [ ] Logika Hitung Keterlambatan.
-- [ ] Upload Foto Bukti Izin (Handling File Upload di API).
-- [ ] Notifikasi / Pengumuman sederhana.
+- [x] **UI/UX Modernization (Glassmorphism)**
+    - [x] Implementasi CSS Variables untuk Dark/Light Mode.
+    - [x] Desain Ulang Login & Register dengan efek Glassmorphism.
+    - [x] Dashboard & Tables menggunakan style Glass Panel.
+    - [x] Fitur Dark Mode Toggle (LocalStorage).
 
 ## Phase 5: Testing & Polishing
 - [ ] Uji coba flow absen Siswa, Guru, Karyawan.

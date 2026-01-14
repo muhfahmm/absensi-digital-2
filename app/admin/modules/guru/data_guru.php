@@ -22,9 +22,28 @@ include '../../includes/sidebar.php';
             </tr>
         </thead>
         <tbody>
+            <?php
+            $stmt = $pdo->query("SELECT * FROM tb_guru ORDER BY created_at DESC");
+            $no = 1;
+            while ($row = $stmt->fetch()):
+            ?>
+            <tr>
+                <td><?= $no++ ?></td>
+                <td><?= htmlspecialchars($row['nip']) ?></td>
+                <td><?= htmlspecialchars($row['nama_lengkap']) ?></td>
+                <td><?= htmlspecialchars($row['no_hp']) ?></td>
+                <td>
+                    <a href="#" style="color: blue;">Edit</a> | 
+                    <a href="#" style="color: red;">Hapus</a>
+                </td>
+            </tr>
+            <?php endwhile; ?>
+            
+            <?php if ($no == 1): ?>
             <tr>
                 <td colspan="5" style="text-align:center;">Data guru belum tersedia.</td>
             </tr>
+            <?php endif; ?>
         </tbody>
     </table>
 </div>
