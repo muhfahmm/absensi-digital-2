@@ -10,24 +10,18 @@ absensi-digital-2/
 │   │   ├── index.php      # Dashboard Utama (Protected)
 │   │   ├── login.php      # Halaman Login Admin
 │   │   ├── register.php   # Halaman Registrasi Admin Baru
-│   │   ├── logout.php     # Script Logout
-│   │   ├── config/        # Koneksi Database & Konfigurasi
-│   │   │   ├── database.php
-│   │   │   └── constants.php
-│   │   ├── includes/      # Komponen UI berulang
-│   │   │   ├── header.php
-│   │   │   ├── sidebar.php
-│   │   │   └── footer.php
-│   │   ├── modules/       # Halaman Fitur CRUD
-│   │   │   ├── siswa/
-│   │   │   │   ├── data_siswa.php
-│   │   │   │   ├── create.php
-│   │   │   │   └── edit.php
+│   │   ├── admin/             # [WEBSITE] Halaman Admin Panel
+│   │   ├── config/        # Konfigurasi Database & Konstanta
+│   │   ├── includes/      # Header, Sidebar, Footer (Glassmorphism)
+│   │   ├── pages/         # (Moved) Old Pages Structure
+│   │   │   ├── admin/
+│   │   │   ├── auth/
 │   │   │   ├── guru/
-│   │   │   │   ├── data_guru.php
-│   │   │   │   └── create.php
+│   │   │   └── siswa/
+│   │   ├── modules/       # (Active) Modular Admin Pages (Siswa, Guru, dll)
+│   │   │   ├── siswa/
+│   │   │   ├── guru/
 │   │   │   ├── karyawan/
-│   │   │   │   └── data_karyawan.php
 │   │   │   ├── kelas/
 │   │   │   │   └── data_kelas.php
 │   │   │   ├── absensi/
