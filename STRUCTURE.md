@@ -44,8 +44,19 @@ absensi-digital-2/
 │       ├── App.js         # Entry Point
 │       ├── app.json       # Expo Config
 │       ├── package.json   # Dependencies
-│       ├── assets/        # Icon & Splash Screen
-│       └── ...
+│       ├── src/
+│       │   ├── components/# Reusable UI
+│       │   │   └── GlassView.js   # Glassmorphism Container
+│       │   ├── constants/ # Colors & Theme
+│       │   │   └── theme.js       # Glass Theme Definition
+│       │   ├── navigation/# App Navigation
+│       │   │   └── AppNavigator.js
+│       │   ├── screens/   # Application Screens
+│       │   │   ├── LoginScreen.js
+│       │   │   ├── HomeScreen.js
+│       │   │   └── ...
+│       │   └── services/  # API Calls
+│       └── assets/        # Icon & Splash Screen
 │
 ├── database.sql           # File Database SQL
 ├── README.md             # Dokumentasi Utama

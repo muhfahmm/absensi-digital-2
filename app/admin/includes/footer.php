@@ -1,5 +1,5 @@
-            </div> <!-- End content-wrapper -->
-        </main> <!-- End main-content -->
-    </div> <!-- End app-container -->
+            </div>
+        </main>
+    </div>
 </body>
 </html>
