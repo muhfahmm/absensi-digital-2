@@ -6,8 +6,7 @@
                 <li><a href="<?= BASE_URL ?>admin/index.php">Dashboard</a></li>
                 <li class="menu-header">Data Master</li>
                 <li><a href="<?= BASE_URL ?>admin/modules/siswa/data_siswa.php">Data Siswa</a></li>
-                <li><a href="<?= BASE_URL ?>admin/modules/guru/data_guru.php">Data Guru</a></li>
-                <li><a href="<?= BASE_URL ?>admin/modules/karyawan/data_karyawan.php">Data Karyawan</a></li>
+                <li><a href="<?= BASE_URL ?>admin/modules/guru/data_guru.php">Data Guru & Karyawan</a></li>
                 <li><a href="<?= BASE_URL ?>admin/modules/kelas/data_kelas.php">Data Kelas</a></li>
                 <li class="menu-header">Laporan</li>
                 <li><a href="<?= BASE_URL ?>admin/modules/absensi/rekap_absensi.php">Rekap Absensi</a></li>
