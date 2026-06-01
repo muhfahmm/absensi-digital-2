@@ -1,6 +1,6 @@
 === Installation & Running Guide ===
 
---- Project root: c:\utama\project\template project\absensi-digital\apps ---
+--- Project root: c:\utama\project\template project\absensi-digital ---
 
 ## 1. Prerequisites
 - Node.js (v18 or later) installed and available in PATH.
@@ -10,10 +10,8 @@
 ## 2. Initial setup (run once)
 ```powershell
 # Navigate to the project folder
-cd "c:\utama\project\template project\absensi-digital\apps"
-
-# Install all dependencies (Next, Expo, Tailwind, TypeScript, etc.)
-npm install
+# From the repository root, install dependencies for the apps workspace
+npm install --prefix apps
 ```
 
 This will create `node_modules/` and generate two lockfiles:
@@ -64,10 +62,8 @@ npm run expo:web```
 ## 2. Initial setup (run once)
 ```powershell
 # Navigate to the project folder
-cd "c:\\utama\\project\\template project\\absensi-digital\\apps"
-
-# Install all dependencies (Next, Expo, Tailwind, TypeScript, etc.)
-npm install
+# From the repository root, install dependencies for the apps workspace
+npm install --prefix apps
 ```
 
 This will create `node_modules/` and generate two lockfiles:
@@ -92,14 +88,16 @@ You can launch Expo in two ways:
 
 ### 4.1.1 Mobile (Expo Go)
 ```powershell
-npm run expo```
+npm run expo
+```
 - This opens the Expo DevTools in your browser (usually at http://localhost:19002).
 - Scan the QR‑code with the **Expo Go** app on your Android or iOS device.
 - Or click “Run on Android device/emulator” / “Run on iOS simulator” in DevTools.
 
 ### 4.1.2 Web (React‑Native‑Web)
 ```powershell
-npm run expo:web```
+npm run expo:web
+```
 - Serves the app at http://localhost:19006.
 - You can view the same UI you would see on mobile, styled with Tailwind.
 
