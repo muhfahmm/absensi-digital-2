@@ -1,0 +1,30 @@
+{
+  "name": "absensi-digital-apps",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "admin": "next dev -p 3000",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "expo": "npx expo start",
+    "expo:web": "npx expo start --web --port 3001"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.5.0",
+    "expo": "^54.0.0",
+    "next": "^16.2.6",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.0",
+    "react-native": "^0.73.7",
+    "react-native-web": "^0.19.11",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@types/react": "~18.2.0",
+    "@types/react-dom": "~18.2.0",
+    "typescript": "~5.9.2"
+  }
+}

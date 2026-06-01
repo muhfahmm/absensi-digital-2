@@ -1,0 +1,121 @@
+=== Installation & Running Guide ===
+
+--- Project root: c:\utama\project\template project\absensi-digital\apps ---
+
+## 1. Prerequisites
+- Node.js (v18 or later) installed and available in PATH.
+- npm (comes with Node) or Yarn if you prefer.
+- Optional but recommended: Git for version control.
+
+## 2. Initial setup (run once)
+```powershell
+# Navigate to the project folder
+cd "c:\utama\project\template project\absensi-digital\apps"
+
+# Install all dependencies (Next, Expo, Tailwind, TypeScript, etc.)
+npm install
+```
+
+This will create `node_modules/` and generate two lockfiles:
+- `package-lock.json` (in this folder) – keep this one.
+- If you have another lockfile in the parent folder you can delete it to silence the Turbopack warning.
+
+## 3. Running the **Next.js** web app
+```powershell
+# Start the development server for Next.js
+npm run dev
+```
+Open your browser and go to:
+- http://localhost:3000 (local)
+- http://192.168.56.1:3000 (network, if you need to access from another device)
+
+The app uses the **App Router** (`app/` folder) and Tailwind CSS is already configured.
+
+## 4. Running **Expo** (mobile & web)
+### 4.1 Expo CLI (already installed as a dependency)
+You can launch Expo in two ways:
+> **Note:** The project now includes `react-native` as a dependency. If you encounter "Could not resolve react-native" errors, ensure you have run `npm install` after adding it.
+
+### 4.1.1 Mobile (Expo Go)
+```powershell
+npm run expo```
+- This opens the Expo DevTools in your browser (usually at http://localhost:19002).
+- Scan the QR‑code with the **Expo Go** app on your Android or iOS device.
+- Or click “Run on Android device/emulator” / “Run on iOS simulator” in DevTools.
+
+### 4.1.2 Web (React‑Native‑Web)
+```powershell
+npm run expo:web```
+- Serves the app at http://localhost:19006.
+- You can view the same UI you would see on mobile, styled with Tailwind.
+
+## 5. Common commands
+| Command | What it does |
+|---------|--------------|
+| `npm run dev` | Starts Next.js development server |
+| `npm run build` | Builds Next.js production bundle |
+| `npm start` (or `npm run start`) | Runs the built Next.js app |
+| `npm run expo` | Starts Expo Metro bundler for mobile |
+| `npm run expo:web` | Starts Expo in web mode |
+
+## 6. Troubleshooting
+- Optional but recommended: Git for version control.
+
+## 2. Initial setup (run once)
+```powershell
+# Navigate to the project folder
+cd "c:\\utama\\project\\template project\\absensi-digital\\apps"
+
+# Install all dependencies (Next, Expo, Tailwind, TypeScript, etc.)
+npm install
+```
+
+This will create `node_modules/` and generate two lockfiles:
+- `package-lock.json` (in this folder) – keep this one.
+- If you have another lockfile in the parent folder you can delete it to silence the Turbopack warning.
+
+## 3. Running the **Next.js** web app
+```powershell
+# Start the development server for Next.js
+npm run dev
+```
+Open your browser and go to:
+- http://localhost:3000 (local)
+- http://192.168.56.1:3000 (network, if you need to access from another device)
+
+The app uses the **App Router** (`app/` folder) and Tailwind CSS is already configured.
+
+## 4. Running **Expo** (mobile & web)
+### 4.1 Expo CLI (already installed as a dependency)
+You can launch Expo in two ways:
+> **Note:** The project now includes `react-native` as a dependency. If you encounter "Could not resolve react-native" errors, ensure you have run `npm install` after adding it.
+
+### 4.1.1 Mobile (Expo Go)
+```powershell
+npm run expo```
+- This opens the Expo DevTools in your browser (usually at http://localhost:19002).
+- Scan the QR‑code with the **Expo Go** app on your Android or iOS device.
+- Or click “Run on Android device/emulator” / “Run on iOS simulator” in DevTools.
+
+### 4.1.2 Web (React‑Native‑Web)
+```powershell
+npm run expo:web```
+- Serves the app at http://localhost:19006.
+- You can view the same UI you would see on mobile, styled with Tailwind.
+
+## 5. Common commands
+| Command | What it does |
+|---------|--------------|
+| `npm run dev` | Starts Next.js development server |
+| `npm run build` | Builds Next.js production bundle |
+| `npm start` (or `npm run start`) | Runs the built Next.js app |
+| `npm run expo` | Starts Expo Metro bundler for mobile |
+| `npm run expo:web` | Starts Expo in web mode |
+
+## 6. Troubleshooting
+- **Multiple lockfile warning**: Delete the lockfile located at `c:\\utama\\project\\template project\\absensi-digital\\package-lock.json` so only the one inside `apps/` remains.
+- **Missing `app` or `pages` folder**: Ensure you have the `app/` directory with at least `layout.tsx` and `page.tsx` (these files are already created).
+- **Tailwind not applying**: Verify `tailwind.config.js` contains the `./app/**/*.{js,ts,jsx,tsx}` path.
+- **Expo refuses to start**: Make sure the global `expo-cli` is installed (`npm install -g expo-cli`) or run via the npm script which uses the local binary.
+
+--- End of guide ---
