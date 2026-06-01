@@ -47,7 +47,7 @@ export default function DashboardPage() {
         <Table
           headers={['Nama', 'Status', 'Jam Masuk', 'Jam Keluar']}
           rows={attendanceData}
-          actions={(index) => (
+          actions={() => (
             <button className="text-primary hover:text-blue-700 font-semibold">
               Detail
             </button>

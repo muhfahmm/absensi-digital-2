@@ -28,7 +28,7 @@ export default function AttendancePage() {
         <Table
           headers={['Tanggal', 'Nama', 'Status', 'Jam Masuk', 'Jam Keluar']}
           rows={attendanceData}
-          actions={(index) => (
+          actions={() => (
             <button className="text-primary hover:text-blue-700 text-sm font-semibold">
               Lihat Detail
             </button>

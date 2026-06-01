@@ -1,5 +1,4 @@
 {
-  "extends": "expo/tsconfig",
   "compilerOptions": {
     "strict": false,
     "esModuleInterop": true,
@@ -12,6 +11,15 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "jsx": "react-native"
-  }
+    "jsx": "react-native",
+    "lib": ["es2020"],
+    "target": "es2020",
+    "module": "esnext",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noEmit": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

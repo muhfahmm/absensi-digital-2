@@ -22,7 +22,7 @@ export default function EmployeesPage() {
         <Table
           headers={['ID', 'Nama', 'Departemen', 'Email']}
           rows={employeeData}
-          actions={(index) => (
+          actions={() => (
             <div className="flex gap-2">
               <button className="text-primary hover:text-blue-700 text-sm font-semibold">
                 Edit

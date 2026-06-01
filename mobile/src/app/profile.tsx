@@ -1,61 +1,143 @@
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F3F4F6',
+  },
+  content: {
+    padding: 24,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 32,
+  },
+  profileCard: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 24,
+    marginBottom: 24,
+  },
+  profileHeader: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#3B82F6',
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  avatarText: {
+    fontSize: 32,
+  },
+  profileName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+  profileEmail: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  profileField: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+    paddingBottom: 16,
+    marginBottom: 16,
+  },
+  profileFieldLast: {
+    borderBottomWidth: 0,
+  },
+  fieldLabel: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginBottom: 4,
+  },
+  fieldValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  buttonContainer: {
+    gap: 12,
+  },
+  button: {
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+  },
+  buttonPrimary: {
+    backgroundColor: '#3B82F6',
+  },
+  buttonWarning: {
+    backgroundColor: '#F59E0B',
+  },
+  buttonDanger: {
+    backgroundColor: '#EF4444',
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+});
 
 export default function ProfileScreen() {
   return (
-    <ScrollView className="flex-1 bg-light">
-      <View className="p-6">
-        <Text className="text-3xl font-bold text-dark mb-8">
-          Profil Saya
-        </Text>
+    <ScrollView style={styles.container}>
+      <View style={styles.content}>
+        <Text style={styles.title}>Profil Saya</Text>
 
         {/* Profile Card */}
-        <View className="bg-white rounded-lg p-6 shadow-md mb-6">
-          <View className="items-center mb-6">
-            <View className="w-20 h-20 bg-primary rounded-full items-center justify-center mb-4">
-              <Text className="text-4xl">👤</Text>
+        <View style={styles.profileCard}>
+          <View style={styles.profileHeader}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>👤</Text>
             </View>
-            <Text className="text-2xl font-bold text-dark">John Doe</Text>
-            <Text className="text-gray-600">john@example.com</Text>
+            <Text style={styles.profileName}>John Doe</Text>
+            <Text style={styles.profileEmail}>john@example.com</Text>
           </View>
 
-          <View className="space-y-4">
-            <View className="border-b border-gray-200 pb-4">
-              <Text className="text-gray-600 text-sm">ID Karyawan</Text>
-              <Text className="text-dark font-semibold">E001</Text>
+          <View>
+            <View style={styles.profileField}>
+              <Text style={styles.fieldLabel}>ID Karyawan</Text>
+              <Text style={styles.fieldValue}>E001</Text>
             </View>
-            <View className="border-b border-gray-200 pb-4">
-              <Text className="text-gray-600 text-sm">Departemen</Text>
-              <Text className="text-dark font-semibold">IT</Text>
+            <View style={styles.profileField}>
+              <Text style={styles.fieldLabel}>Departemen</Text>
+              <Text style={styles.fieldValue}>IT</Text>
             </View>
-            <View className="border-b border-gray-200 pb-4">
-              <Text className="text-gray-600 text-sm">Posisi</Text>
-              <Text className="text-dark font-semibold">Software Engineer</Text>
+            <View style={styles.profileField}>
+              <Text style={styles.fieldLabel}>Posisi</Text>
+              <Text style={styles.fieldValue}>Software Engineer</Text>
             </View>
-            <View>
-              <Text className="text-gray-600 text-sm">Tanggal Bergabung</Text>
-              <Text className="text-dark font-semibold">01 Januari 2023</Text>
+            <View style={[styles.profileField, styles.profileFieldLast]}>
+              <Text style={styles.fieldLabel}>Tanggal Bergabung</Text>
+              <Text style={styles.fieldValue}>01 Januari 2023</Text>
             </View>
           </View>
         </View>
 
         {/* Action Buttons */}
-        <TouchableOpacity className="bg-primary rounded-lg p-4 mb-3">
-          <Text className="text-white text-center font-semibold">
-            Edit Profil
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={[styles.button, styles.buttonPrimary]}>
+            <Text style={styles.buttonText}>Edit Profil</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity className="bg-warning rounded-lg p-4 mb-3">
-          <Text className="text-white text-center font-semibold">
-            Ubah Password
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, styles.buttonWarning]}>
+            <Text style={styles.buttonText}>Ubah Password</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity className="bg-danger rounded-lg p-4">
-          <Text className="text-white text-center font-semibold">
-            Logout
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, styles.buttonDanger]}>
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
