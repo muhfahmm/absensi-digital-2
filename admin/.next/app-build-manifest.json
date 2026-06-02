@@ -1,35 +1,48 @@
 {
   "pages": {
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+    "/_not-found/page": [
+      "static/chunks/webpack-b6065e33adf26a29.js",
+      "static/chunks/618f8807-294cea9d40b23b0c.js",
+      "static/chunks/364-d2a0975782ad7ba5.js",
+      "static/chunks/main-app-6d54f1fccefc8ed8.js",
+      "static/chunks/app/_not-found/page-f7e3762daf025a4e.js"
     ],
     "/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/layout.css",
-      "static/chunks/app/layout.js"
+      "static/chunks/webpack-b6065e33adf26a29.js",
+      "static/chunks/618f8807-294cea9d40b23b0c.js",
+      "static/chunks/364-d2a0975782ad7ba5.js",
+      "static/chunks/main-app-6d54f1fccefc8ed8.js",
+      "static/css/760eb119463f3b2f.css",
+      "static/chunks/219-a2ceef32905ace78.js",
+      "static/chunks/app/layout-c691e4a742a9ad9e.js"
     ],
-    "/dashboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/dashboard/page.js"
-    ],
-    "/attendance/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/attendance/page.js"
+    "/page": [
+      "static/chunks/webpack-b6065e33adf26a29.js",
+      "static/chunks/618f8807-294cea9d40b23b0c.js",
+      "static/chunks/364-d2a0975782ad7ba5.js",
+      "static/chunks/main-app-6d54f1fccefc8ed8.js",
+      "static/chunks/app/page-f1b71dfeff3e0545.js"
     ],
     "/employees/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/employees/page.js"
+      "static/chunks/webpack-b6065e33adf26a29.js",
+      "static/chunks/618f8807-294cea9d40b23b0c.js",
+      "static/chunks/364-d2a0975782ad7ba5.js",
+      "static/chunks/main-app-6d54f1fccefc8ed8.js",
+      "static/chunks/app/employees/page-41db0c47cdbc0c57.js"
     ],
-    "/_not-found/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+    "/attendance/page": [
+      "static/chunks/webpack-b6065e33adf26a29.js",
+      "static/chunks/618f8807-294cea9d40b23b0c.js",
+      "static/chunks/364-d2a0975782ad7ba5.js",
+      "static/chunks/main-app-6d54f1fccefc8ed8.js",
+      "static/chunks/app/attendance/page-cc72fb20b944a2ea.js"
+    ],
+    "/dashboard/page": [
+      "static/chunks/webpack-b6065e33adf26a29.js",
+      "static/chunks/618f8807-294cea9d40b23b0c.js",
+      "static/chunks/364-d2a0975782ad7ba5.js",
+      "static/chunks/main-app-6d54f1fccefc8ed8.js",
+      "static/chunks/app/dashboard/page-53d8b2c8ad5f38e1.js"
     ]
   }
 }

@@ -1,7 +1,5 @@
 'use client';
 
-import Card from '@/components/Card';
-
 export default function DashboardPage() {
   const stats = [
     { 
@@ -51,7 +49,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-dark mb-2">Good Morning, Admin! 👋</h1>
-        <p className="text-slate-600">Here's what's happening with your school today</p>
+        <p className="text-slate-600">Here&apos;s what&apos;s happening with your school today</p>
       </div>
 
       {/* Stats Cards */}
