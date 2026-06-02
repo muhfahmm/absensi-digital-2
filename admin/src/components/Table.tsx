@@ -1,3 +1,5 @@
+"use client";
+
 interface TableProps {
   headers: string[];
   rows: (string | number)[][];
