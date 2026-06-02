@@ -9,12 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: '#3B82F6',
-        secondary: '#10B981',
-        danger: '#EF4444',
+        primary: '#2C5EAD',
+        secondary: '#1591DC',
+        surface: '#F8FAFC',
+        dark: '#1E293B',
+        light: '#F8FAFC',
+        success: '#10B981',
         warning: '#F59E0B',
-        dark: '#1F2937',
-        light: '#F3F4F6',
+        danger: '#EF4444',
+        info: '#3B82F6',
       },
       spacing: {
         '128': '32rem',
