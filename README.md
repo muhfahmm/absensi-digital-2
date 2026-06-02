@@ -1,178 +1,36 @@
-# 🎯 Absensi Digital - Sistem Manajemen Kehadiran
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Sistem manajemen kehadiran digital yang komprehensif dengan admin panel dan aplikasi mobile.
+## Getting Started
 
-## 🚀 Quick Start (3 Langkah)
+First, run the development server:
 
-### 1. Install Dependencies
-```bash
-npm install --workspaces
-```
-
-### 2. Run Admin Panel
 ```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-### 3. Buka Browser
-```
-http://localhost:3000
-```
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-**Catatan**: Folder `node_modules` akan dibuat otomatis saat `npm install`
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
----
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## 📋 Struktur Proyek
+## Learn More
 
-```
-absensi-digital/
-├── admin/              # Next.js Admin Dashboard
-├── mobile/             # Expo React Native App
-├── config/             # Shared configurations
-├── index.html          # Root entry point
-├── package.json        # Root workspace config
-└── [documentation]     # README, SETUP, QUICK_START, dll
-```
+To learn more about Next.js, take a look at the following resources:
 
-## 🛠️ Tech Stack
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-### Admin Panel
-- **Framework**: Next.js 14
-- **Styling**: Tailwind CSS
-- **Language**: TypeScript
-- **HTTP Client**: Axios
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-### Mobile App
-- **Framework**: Expo
-- **UI**: React Native + NativeWind
-- **Language**: TypeScript
-- **HTTP Client**: Axios
+## Deploy on Vercel
 
-### Shared
-- **Package Manager**: npm (workspaces)
-- **Linting**: ESLint
-- **Type Checking**: TypeScript
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
----
-
-## 📦 Available Scripts
-
-### Root Level
-```bash
-npm run dev              # Run admin panel (default)
-npm run dev:admin       # Run admin panel
-npm run dev:mobile      # Run mobile app
-npm run build           # Build both admin and mobile
-npm run build:admin     # Build admin only
-npm run build:mobile    # Build mobile only
-npm run install:all     # Install all dependencies
-```
-
-### Admin Panel
-```bash
-cd admin
-npm run dev             # Development server
-npm run build           # Production build
-npm run start           # Start production server
-npm run lint            # Run ESLint
-```
-
-### Mobile App
-```bash
-cd mobile
-npm run dev             # Start Expo dev server
-npm run android         # Run on Android
-npm run ios             # Run on iOS
-npm run web             # Run on web
-npm run build           # Build for production
-```
-
----
-
-## 🎨 Tailwind Theme
-
-Warna yang tersedia:
-- **Primary**: `#3B82F6` (Blue)
-- **Secondary**: `#10B981` (Green)
-- **Danger**: `#EF4444` (Red)
-- **Warning**: `#F59E0B` (Amber)
-- **Dark**: `#1F2937`
-- **Light**: `#F3F4F6`
-
----
-
-## 🔐 Environment Variables
-
-### Admin Panel (`.env.local`)
-```
-NEXT_PUBLIC_API_URL=http://localhost:3001/api
-```
-
-### Mobile App (`.env`)
-```
-EXPO_PUBLIC_API_URL=http://localhost:3001/api
-```
-
-**Catatan**: File `.env.local` dan `.env` sudah dibuat dan siap digunakan.
-
----
-
-## 📚 Documentation
-
-- **QUICK_START.md** - 3 langkah mudah untuk mulai
-- **SETUP.md** - Panduan setup detail
-- **INSTALLATION_SUMMARY.md** - Ringkasan setup
-- **START_HERE.md** - Panduan awal
-- **DEVELOPER_CHECKLIST.md** - Checklist untuk development
-
----
-
-## 🚀 Deployment
-
-### Admin Panel (Vercel)
-```bash
-npm run build:admin
-# Deploy to Vercel
-```
-
-### Mobile App (EAS)
-```bash
-cd mobile
-eas build --platform android
-eas build --platform ios
-```
-
----
-
-## 📝 Development Guidelines
-
-### Naming Conventions
-- Components: PascalCase (e.g., `UserCard.tsx`)
-- Utilities: camelCase (e.g., `formatDate.ts`)
-- Styles: kebab-case (e.g., `card-container`)
-
-### File Organization
-- Keep components small and focused
-- Use TypeScript for type safety
-- Follow ESLint rules
-- Use Tailwind utilities instead of custom CSS
-
----
-
-## 🤝 Contributing
-
-1. Create a feature branch
-2. Make your changes
-3. Test thoroughly
-4. Submit a pull request
-
----
-
-## 📄 License
-
-MIT License - feel free to use this project for your needs.
-
----
-
-**Happy Coding! 🎉**
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
