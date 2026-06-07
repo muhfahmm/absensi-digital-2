@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import pool from "./config/db";
 
 // Samakan interface dengan kolom di tb_admin
 interface Admin {
