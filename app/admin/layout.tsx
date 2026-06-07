@@ -89,11 +89,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isActive = (href: string) => pathname === href;
 
   return (
-    <div className="flex min-h-screen bg-wedding-bg font-sans selection:bg-wedding-pink/30">
+    <div className="flex min-h-screen bg-[#fffafa] font-sans selection:bg-[#f9a8d4]/30">
       {/* Mobile Topbar */}
-      <header className="fixed top-0 left-0 right-0 z-40 flex h-16 items-center justify-between border-b border-wedding-pink/30 bg-primary px-6 text-white lg:hidden">
+      <header className="fixed top-0 left-0 right-0 z-40 flex h-16 items-center justify-between border-b border-[#f9a8d4]/30 bg-[#1e3a5f] px-6 text-white lg:hidden">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-lg bg-accent flex items-center justify-center font-serif text-lg font-bold text-primary">
+          <div className="h-8 w-8 rounded-lg bg-[#c9a84c] flex items-center justify-center font-serif text-lg font-bold text-[#1e3a5f]">
             A
           </div>
           <span className="font-serif text-lg font-semibold tracking-wide">Absensi Digital</span>
@@ -109,25 +109,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar Overlay for Mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-primary/40 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-30 bg-[#1e3a5f]/40 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed bottom-0 top-0 left-0 z-45 w-[265px] border-r border-wedding-pink/30 bg-primary flex flex-col transition-all duration-300 ease-in-out lg:z-10 lg:translate-x-0 ${
+        className={`fixed bottom-0 top-0 left-0 z-45 w-[265px] border-r border-[#f9a8d4]/30 bg-[#1e3a5f] flex flex-col transition-all duration-300 ease-in-out lg:z-10 lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
         {/* Sidebar Header */}
         <div className="flex h-20 items-center gap-3 border-b border-white/10 px-6">
-          <div className="h-10 w-10 rounded-xl bg-accent flex items-center justify-center font-serif text-xl font-bold text-primary shadow-md">
+          <div className="h-10 w-10 rounded-xl bg-[#c9a84c] flex items-center justify-center font-serif text-xl font-bold text-[#1e3a5f] shadow-md">
             AD
           </div>
           <div>
             <h1 className="font-serif text-base font-bold text-white tracking-wide leading-none">Absensi Digital</h1>
-            <span className="text-xs font-medium text-accent">Panel Administrator</span>
+            <span className="text-xs font-medium text-[#c9a84c]">Panel Administrator</span>
           </div>
         </div>
 
@@ -162,11 +162,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             onClick={() => setSidebarOpen(false)}
                             className={`flex items-center gap-3.5 rounded-xl px-3.5 py-2.5 text-xs font-semibold tracking-wide transition-all duration-200 ${
                               active
-                                ? "bg-accent/25 text-white border-l-4 border-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
+                                ? "bg-[#c9a84c]/25 text-white border-l-4 border-[#c9a84c] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
                                 : "text-white/75 hover:bg-white/8 hover:text-white"
                             }`}
                           >
-                            <Icon size={16} className={active ? "text-accent" : "text-white/60"} />
+                            <Icon size={16} className={active ? "text-[#c9a84c]" : "text-white/60"} />
                             <span>{item.label}</span>
                           </Link>
                         </li>
@@ -183,7 +183,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="border-t border-white/10 p-4">
           <div className="flex items-center justify-between rounded-xl bg-white/5 p-3">
             <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-full bg-accent/25 border border-accent flex items-center justify-center font-bold text-accent text-xs">
+              <div className="h-8 w-8 rounded-full bg-[#c9a84c]/25 border border-[#c9a84c] flex items-center justify-center font-bold text-[#c9a84c] text-xs">
                 A
               </div>
               <div className="overflow-hidden">
@@ -205,17 +205,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content Wrapper */}
       <div className="flex flex-1 flex-col lg:pl-[265px]">
         {/* Desktop Navbar / Topbar */}
-        <header className="sticky top-0 z-35 hidden h-20 items-center justify-between border-b border-wedding-pink/30 bg-white/70 backdrop-blur-md px-8 lg:flex">
+        <header className="sticky top-0 z-35 hidden h-20 items-center justify-between border-b border-[#f9a8d4]/30 bg-white/70 backdrop-blur-md px-8 lg:flex">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-muted">Selamat datang kembali</span>
-            <span className="inline-flex h-2 w-2 rounded-full bg-wedding-sage animate-pulse" />
+            <span className="text-xs font-bold uppercase tracking-widest text-[#5c6f84]">Selamat datang kembali</span>
+            <span className="inline-flex h-2 w-2 rounded-full bg-[#9dc183] animate-pulse" />
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right">
-              <p className="text-sm font-bold text-primary">Fahim Fahim</p>
-              <p className="text-xs text-muted">fahimfahim0407@gmail.com</p>
+              <p className="text-sm font-bold text-[#1e3a5f]">Fahim Fahim</p>
+              <p className="text-xs text-[#5c6f84]">fahimfahim0407@gmail.com</p>
             </div>
-            <div className="h-10 w-10 rounded-full bg-wedding-pink/30 border border-wedding-pink flex items-center justify-center font-bold text-primary shadow-sm">
+            <div className="h-10 w-10 rounded-full bg-[#f9a8d4]/30 border border-[#f9a8d4] flex items-center justify-center font-bold text-[#1e3a5f] shadow-sm">
               FF
             </div>
           </div>
