@@ -4,13 +4,21 @@ import React, { useState } from "react";
 import { BookOpen, Plus, Edit2, Trash2, Search } from "lucide-react";
 
 export default function MapelPage() {
-  const [mapel, setMapel] = useState([
-    { id: 1, kode: "MP001", nama: "Matematika", guru: "Drs. Ahmad Sobari", status: "Aktif" },
-    { id: 2, kode: "MP002", nama: "Bahasa Indonesia", guru: "Siti Rahmawati, S.Pd", status: "Aktif" },
-    { id: 3, kode: "MP003", nama: "Fisika", guru: "Hendra Wijaya, M.Si", status: "Aktif" },
-    { id: 4, kode: "MP004", nama: "Bahasa Inggris", guru: "Linda Amelia, M.Hum", status: "Aktif" },
-    { id: 5, kode: "MP005", nama: "Kimia", guru: "Dr. Rahmat Hidayat", status: "Aktif" },
-  ]);
+  const [mapel, setMapel] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    fetch("/api/mapel")
+      .then(res => res.json())
+      .then(data => {
+        setMapel(data || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to load mapel:", err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
@@ -54,14 +62,18 @@ export default function MapelPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {mapel.map((m) => (
+              {loading ? (
+                <tr><td colSpan={5} className="py-4 text-center text-slate-500">Memuat data...</td></tr>
+              ) : mapel.length === 0 ? (
+                <tr><td colSpan={5} className="py-4 text-center text-slate-500">Belum ada mata pelajaran.</td></tr>
+              ) : mapel.map((m) => (
                 <tr key={m.id} className="text-xs hover:bg-slate-50/50">
                   <td className="py-4 font-mono font-bold text-accent-dark">{m.kode}</td>
                   <td className="py-4 font-bold text-primary text-sm">{m.nama}</td>
-                  <td className="py-4 font-semibold text-slate-600">{m.guru}</td>
+                  <td className="py-4 font-semibold text-slate-600">{m.guru_nama || '-'}</td>
                   <td className="py-4">
-                    <span className="inline-flex rounded-full bg-wedding-sage/15 border border-wedding-sage/30 px-2.5 py-0.5 font-bold text-wedding-sage">
-                      {m.status}
+                    <span className={`inline-flex rounded-full px-2.5 py-0.5 font-bold ${m.is_aktif ? 'bg-wedding-sage/15 border border-wedding-sage/30 text-wedding-sage' : 'bg-slate-100 border border-slate-300 text-slate-500'}`}>
+                      {m.is_aktif ? 'Aktif' : 'Nonaktif'}
                     </span>
                   </td>
                   <td className="py-4 text-right">

@@ -4,13 +4,21 @@ import React, { useState } from "react";
 import { BarChart3, FileDown, Calendar, School, Filter, Printer } from "lucide-react";
 
 export default function LaporanPage() {
-  const [dataLaporan, setDataLaporan] = useState([
-    { kelas: "X IPA 1", total: 32, hadir: "96%", izin: 2, sakit: 1, alpha: 1 },
-    { kelas: "X IPA 2", total: 30, hadir: "94%", izin: 3, sakit: 1, alpha: 2 },
-    { kelas: "XI IPA 1", total: 28, hadir: "98%", izin: 1, sakit: 0, alpha: 0 },
-    { kelas: "XI IPA 2", total: 30, hadir: "95%", izin: 2, sakit: 1, alpha: 1 },
-    { kelas: "XII IPA 1", total: 32, hadir: "97%", izin: 1, sakit: 1, alpha: 0 },
-  ]);
+  const [dataLaporan, setDataLaporan] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    fetch("/api/laporan")
+      .then(res => res.json())
+      .then(data => {
+        setDataLaporan(data || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to load laporan:", err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
@@ -70,7 +78,11 @@ export default function LaporanPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {dataLaporan.map((item, idx) => (
+              {loading ? (
+                <tr><td colSpan={6} className="py-4 text-center text-slate-500">Memuat data...</td></tr>
+              ) : dataLaporan.length === 0 ? (
+                <tr><td colSpan={6} className="py-4 text-center text-slate-500">Belum ada data laporan.</td></tr>
+              ) : dataLaporan.map((item, idx) => (
                 <tr key={idx} className="text-xs hover:bg-slate-50/50">
                   <td className="py-4 font-bold text-primary text-sm">{item.kelas}</td>
                   <td className="py-4 font-semibold text-slate-600">{item.total} Siswa</td>

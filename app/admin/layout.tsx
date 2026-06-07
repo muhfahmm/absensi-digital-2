@@ -1,39 +1,56 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  CalendarDays,
-  School,
-  BookOpen,
-  Calendar,
-  Users,
-  UserCog,
-  ClipboardCheck,
-  FileText,
-  BarChart3,
-  Image as ImageIcon,
-  Bell,
-  Camera,
-  Building,
-  Send,
-  Settings,
-  ChevronDown,
-  ChevronUp,
-  Menu,
-  X,
-  LogOut,
-} from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { LayoutDashboard, CalendarDays, School, BookOpen, Calendar, Users, UserCog, ClipboardCheck, FileText, BarChart3, Bell, Settings, ChevronDown, ChevronUp, Menu, X, LogOut } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [masterExpanded, setMasterExpanded] = useState(true);
   const [cmsExpanded, setCmsExpanded] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const menuGroups = [
+  useEffect(() => {
+    if (pathname === '/admin/auth/login') {
+      setLoading(false);
+      return;
+    }
+    
+    fetch('/api/auth/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.user) {
+          setUser(data.user);
+        } else {
+          router.push('/admin/auth/login');
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [pathname, router]);
+
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    await fetch('/api/auth/logout', { method: 'POST' });
+    setUser(null);
+    router.push('/admin/auth/login');
+  };
+
+  if (pathname === '/admin/auth/login') {
+    return <div className="font-sans min-h-screen bg-[#FFFFF0]">{children}</div>;
+  }
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center font-sans bg-[#fffafa]">Memuat...</div>;
+  }
+
+  const isGuru = user?.role === 'guru';
+
+  let menuGroups = [
     {
       title: "Utama",
       items: [
@@ -45,11 +62,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       expanded: masterExpanded,
       setExpanded: setMasterExpanded,
       items: [
-        { href: "/admin/tahun-ajaran", label: "Tahun Ajaran", icon: CalendarDays },
-        { href: "/admin/kelas", label: "Data Kelas", icon: School },
-        { href: "/admin/mapel", label: "Mata Pelajaran", icon: BookOpen },
-        { href: "/admin/jadwal", label: "Jadwal Pelajaran", icon: Calendar },
-      ],
+          { href: "/admin/kelas", label: "Data Kelas", icon: School },
+          { href: "/admin/mapel", label: "Mata Pelajaran", icon: BookOpen },
+          { href: "/admin/jadwal", label: "Jadwal Pelajaran", icon: Calendar },
+        ],
     },
     {
       title: "Manajemen Pengguna",
@@ -71,20 +87,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       expanded: cmsExpanded,
       setExpanded: setCmsExpanded,
       items: [
-        { href: "/admin/slider", label: "Slider Banner", icon: ImageIcon },
-        { href: "/admin/pengumuman", label: "Pengumuman", icon: Bell },
-        { href: "/admin/galeri", label: "Galeri Foto", icon: Camera },
-        { href: "/admin/profil-sekolah", label: "Profil Sekolah", icon: Building },
-      ],
+          { href: "/admin/pengumuman", label: "Pengumuman", icon: Bell },
+        ],
     },
     {
       title: "Sistem",
       items: [
-        { href: "/admin/notifikasi", label: "Kirim Notifikasi", icon: Send },
-        { href: "/admin/pengaturan", label: "Pengaturan Sistem", icon: Settings },
-      ],
+          { href: "/admin/pengaturan", label: "Pengaturan Sistem", icon: Settings },
+        ],
     },
   ];
+
+  if (isGuru) {
+    menuGroups = [
+      {
+        title: "Utama",
+        items: [
+          { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+        ],
+      },
+      {
+        title: "Kehadiran & Laporan",
+        items: [
+          { href: "/admin/laporan", label: "Laporan & Rekap", icon: BarChart3 },
+        ],
+      }
+    ];
+  }
 
   const isActive = (href: string) => pathname === href;
 
@@ -127,7 +156,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
           <div>
             <h1 className="font-serif text-base font-bold text-white tracking-wide leading-none">Absensi Digital</h1>
-            <span className="text-xs font-medium text-[#c9a84c]">Panel Administrator</span>
+            <span className="text-xs font-medium text-[#c9a84c]">Panel {isGuru ? 'Guru' : 'Administrator'}</span>
           </div>
         </div>
 
@@ -183,21 +212,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="border-t border-white/10 p-4">
           <div className="flex items-center justify-between rounded-xl bg-white/5 p-3">
             <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-full bg-[#c9a84c]/25 border border-[#c9a84c] flex items-center justify-center font-bold text-[#c9a84c] text-xs">
-                A
+              <div className="h-8 w-8 rounded-full bg-[#c9a84c]/25 border border-[#c9a84c] flex items-center justify-center font-bold text-[#c9a84c] text-xs uppercase">
+                {user?.nama?.[0] || 'U'}
               </div>
               <div className="overflow-hidden">
-                <p className="truncate text-xs font-bold text-white leading-tight">Super Admin</p>
-                <p className="truncate text-[10px] text-white/50 leading-none">admin@sekolah.sch.id</p>
+                <p className="truncate text-xs font-bold text-white leading-tight">{user?.nama || 'User'}</p>
+                <p className="truncate text-[10px] text-white/50 leading-none">{user?.role || 'Role'}</p>
               </div>
             </div>
-            <Link
-              href="/admin/auth/login"
-              className="rounded-lg p-1.5 text-white/60 hover:bg-white/10 hover:text-white"
+            <button
+              onClick={handleLogout}
+              className="rounded-lg p-1.5 text-white/60 hover:bg-white/10 hover:text-rose-400"
               title="Logout"
             >
               <LogOut size={16} />
-            </Link>
+            </button>
           </div>
         </div>
       </aside>
@@ -212,11 +241,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right">
-              <p className="text-sm font-bold text-[#1e3a5f]">Fahim Fahim</p>
-              <p className="text-xs text-[#5c6f84]">fahimfahim0407@gmail.com</p>
+              <p className="text-sm font-bold text-[#1e3a5f]">{user?.nama || 'User'}</p>
+              <p className="text-xs text-[#5c6f84] uppercase tracking-wider">{user?.role || 'Role'}</p>
             </div>
-            <div className="h-10 w-10 rounded-full bg-[#f9a8d4]/30 border border-[#f9a8d4] flex items-center justify-center font-bold text-[#1e3a5f] shadow-sm">
-              FF
+            <div className="h-10 w-10 rounded-full bg-[#f9a8d4]/30 border border-[#f9a8d4] flex items-center justify-center font-bold text-[#1e3a5f] shadow-sm uppercase">
+              {user?.nama?.[0] || 'U'}
             </div>
           </div>
         </header>

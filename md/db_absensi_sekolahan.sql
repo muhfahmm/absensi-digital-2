@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS tb_admin (
   email       VARCHAR(100)    NOT NULL DEFAULT '',
   foto        VARCHAR(255)    NOT NULL DEFAULT '',
   is_aktif    TINYINT(1)      NOT NULL DEFAULT 1,
+  role        ENUM('superadmin', 'admin') NOT NULL DEFAULT 'superadmin',
   created_at  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
@@ -29,44 +30,6 @@ CREATE TABLE IF NOT EXISTS tb_admin (
 -- Default admin  (password: admin123  — ganti setelah deploy!)
 INSERT INTO tb_admin (username, password, nama_lengkap, email)
 VALUES ('admin', '$2b$12$placeholder_bcrypt_hash_here', 'Super Admin', 'admin@sekolah.sch.id');
-
--- ============================================================
---  2. PROFIL SEKOLAH  (konten dikendalikan admin)
--- ============================================================
-CREATE TABLE IF NOT EXISTS tb_profil_sekolah (
-  id            INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-  nama_sekolah  VARCHAR(150)  NOT NULL,
-  npsn          VARCHAR(20)   NOT NULL DEFAULT '',
-  alamat        TEXT          NOT NULL,
-  telepon       VARCHAR(20)   NOT NULL DEFAULT '',
-  email         VARCHAR(100)  NOT NULL DEFAULT '',
-  website       VARCHAR(150)  NOT NULL DEFAULT '',
-  logo          VARCHAR(255)  NOT NULL DEFAULT '',
-  kepala_sekolah VARCHAR(100) NOT NULL DEFAULT '',
-  tahun_berdiri YEAR          NULL,
-  akreditasi    VARCHAR(5)    NOT NULL DEFAULT '',
-  visi          TEXT,
-  misi          TEXT,
-  updated_at    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO tb_profil_sekolah (nama_sekolah, alamat)
-VALUES ('Nama Sekolah', 'Alamat Sekolah');
-
--- ============================================================
---  3. TAHUN AJARAN
--- ============================================================
-CREATE TABLE IF NOT EXISTS tb_tahun_ajaran (
-  id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-  nama        VARCHAR(20)   NOT NULL,  -- contoh: 2024/2025
-  semester    ENUM('Ganjil','Genap') NOT NULL,
-  tanggal_mulai DATE        NOT NULL,
-  tanggal_selesai DATE      NOT NULL,
-  is_aktif    TINYINT(1)    NOT NULL DEFAULT 0,
-  created_at  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 --  4. KELAS
@@ -78,12 +41,11 @@ CREATE TABLE IF NOT EXISTS tb_kelas (
   ruangan         VARCHAR(50)   NOT NULL DEFAULT '',
   kapasitas       SMALLINT      NOT NULL DEFAULT 30,
   wali_kelas_id   INT UNSIGNED  NULL,
-  tahun_ajaran_id INT UNSIGNED  NOT NULL,
+  -- tahun_ajaran_id column removed as per user request
   is_aktif        TINYINT(1)    NOT NULL DEFAULT 1,
   created_at      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  FOREIGN KEY (tahun_ajaran_id) REFERENCES tb_tahun_ajaran(id) ON DELETE RESTRICT
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
@@ -130,15 +92,14 @@ CREATE TABLE IF NOT EXISTS tb_siswa (
   email           VARCHAR(100)  NOT NULL DEFAULT '',
   foto            VARCHAR(255)  NOT NULL DEFAULT '',
   kelas_id        INT UNSIGNED  NULL,
-  tahun_ajaran_id INT UNSIGNED  NOT NULL,
+  -- tahun_ajaran_id column removed as per user request
   username        VARCHAR(50)   NOT NULL UNIQUE,
   password        VARCHAR(255)  NOT NULL,
   is_aktif        TINYINT(1)    NOT NULL DEFAULT 1,
   created_at      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  FOREIGN KEY (kelas_id)        REFERENCES tb_kelas(id)        ON DELETE SET NULL,
-  FOREIGN KEY (tahun_ajaran_id) REFERENCES tb_tahun_ajaran(id) ON DELETE RESTRICT
+  FOREIGN KEY (kelas_id)        REFERENCES tb_kelas(id)        ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
@@ -168,13 +129,12 @@ CREATE TABLE IF NOT EXISTS tb_jadwal (
   jam_mulai           TIME          NOT NULL,
   jam_selesai         TIME          NOT NULL,
   ruangan             VARCHAR(50)   NOT NULL DEFAULT '',
-  tahun_ajaran_id     INT UNSIGNED  NOT NULL,
+  -- tahun_ajaran_id column removed as per user request
   created_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   FOREIGN KEY (kelas_id)          REFERENCES tb_kelas(id)          ON DELETE CASCADE,
   FOREIGN KEY (mata_pelajaran_id) REFERENCES tb_mata_pelajaran(id) ON DELETE CASCADE,
-  FOREIGN KEY (guru_id)           REFERENCES tb_guru(id)           ON DELETE CASCADE,
-  FOREIGN KEY (tahun_ajaran_id)   REFERENCES tb_tahun_ajaran(id)   ON DELETE RESTRICT
+  FOREIGN KEY (guru_id)           REFERENCES tb_guru(id)           ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
@@ -203,7 +163,7 @@ CREATE TABLE IF NOT EXISTS tb_absensi_siswa (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
---  10. ABSENSI GURU
+-- 10. ABSENSI GURU
 -- ============================================================
 CREATE TABLE IF NOT EXISTS tb_absensi_guru (
   id            INT UNSIGNED  NOT NULL AUTO_INCREMENT,
@@ -225,7 +185,7 @@ CREATE TABLE IF NOT EXISTS tb_absensi_guru (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
---  11. IZIN / SURAT KETERANGAN
+-- 11. IZIN / SURAT KETERANGAN
 -- ============================================================
 CREATE TABLE IF NOT EXISTS tb_izin (
   id              INT UNSIGNED  NOT NULL AUTO_INCREMENT,
@@ -246,21 +206,7 @@ CREATE TABLE IF NOT EXISTS tb_izin (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
---  12. NOTIFIKASI
--- ============================================================
-CREATE TABLE IF NOT EXISTS tb_notifikasi (
-  id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-  judul       VARCHAR(150)  NOT NULL,
-  pesan       TEXT          NOT NULL,
-  jenis_user  ENUM('Semua','Siswa','Guru','Admin') NOT NULL DEFAULT 'Semua',
-  user_id     INT UNSIGNED  NULL,   -- NULL = broadcast
-  is_baca     TINYINT(1)    NOT NULL DEFAULT 0,
-  created_at  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ============================================================
---  13. PENGUMUMAN (konten dikontrol admin)
+-- 12. PENGUMUMAN (konten dikontrol admin)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS tb_pengumuman (
   id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
@@ -277,75 +223,7 @@ CREATE TABLE IF NOT EXISTS tb_pengumuman (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
---  14. SLIDER / BANNER WEBSITE (konten dikontrol admin)
--- ============================================================
-CREATE TABLE IF NOT EXISTS tb_slider (
-  id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-  judul       VARCHAR(150)  NOT NULL DEFAULT '',
-  gambar      VARCHAR(255)  NOT NULL,
-  link        VARCHAR(255)  NOT NULL DEFAULT '',
-  urutan      TINYINT       NOT NULL DEFAULT 0,
-  is_aktif    TINYINT(1)    NOT NULL DEFAULT 1,
-  created_at  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ============================================================
---  15. GALERI (konten dikontrol admin)
--- ============================================================
-CREATE TABLE IF NOT EXISTS tb_galeri (
-  id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-  judul       VARCHAR(150)  NOT NULL,
-  deskripsi   TEXT,
-  gambar      VARCHAR(255)  NOT NULL,
-  kategori    VARCHAR(50)   NOT NULL DEFAULT 'Umum',
-  is_aktif    TINYINT(1)    NOT NULL DEFAULT 1,
-  dibuat_oleh INT UNSIGNED  NOT NULL,
-  created_at  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  FOREIGN KEY (dibuat_oleh) REFERENCES tb_admin(id) ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ============================================================
---  16. LAPORAN REKAP (cache / snapshot harian)
--- ============================================================
-CREATE TABLE IF NOT EXISTS tb_rekap_absensi (
-  id                INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-  kelas_id          INT UNSIGNED  NOT NULL,
-  tahun_ajaran_id   INT UNSIGNED  NOT NULL,
-  tanggal           DATE          NOT NULL,
-  total_siswa       SMALLINT      NOT NULL DEFAULT 0,
-  jumlah_hadir      SMALLINT      NOT NULL DEFAULT 0,
-  jumlah_izin       SMALLINT      NOT NULL DEFAULT 0,
-  jumlah_sakit      SMALLINT      NOT NULL DEFAULT 0,
-  jumlah_alpha      SMALLINT      NOT NULL DEFAULT 0,
-  persentase_hadir  DECIMAL(5,2)  NOT NULL DEFAULT 0.00,
-  created_at        DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at        DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  UNIQUE KEY uq_rekap (kelas_id, tanggal),
-  FOREIGN KEY (kelas_id)        REFERENCES tb_kelas(id)        ON DELETE CASCADE,
-  FOREIGN KEY (tahun_ajaran_id) REFERENCES tb_tahun_ajaran(id) ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ============================================================
---  17. LOG AKTIVITAS ADMIN
--- ============================================================
-CREATE TABLE IF NOT EXISTS tb_log_aktivitas (
-  id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  admin_id    INT UNSIGNED    NOT NULL,
-  aksi        VARCHAR(100)    NOT NULL,
-  tabel       VARCHAR(50)     NOT NULL DEFAULT '',
-  data_id     INT UNSIGNED    NULL,
-  detail      TEXT,
-  ip_address  VARCHAR(45)     NOT NULL DEFAULT '',
-  created_at  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  FOREIGN KEY (admin_id) REFERENCES tb_admin(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ============================================================
---  18. PENGATURAN APLIKASI (konten dikontrol admin)
+-- 13. PENGATURAN APLIKASI (konten dikontrol admin)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS tb_pengaturan (
   id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
@@ -366,3 +244,17 @@ INSERT INTO tb_pengaturan (kunci, nilai, deskripsi) VALUES
   ('warna_utama',        '#1e3a5f',  'Warna utama tema website'),
   ('warna_aksen',        '#c9a84c',  'Warna aksen tema website'),
   ('maintenance_mode',   '0',        'Mode maintenance');
+
+-- ============================================================
+-- 14. QR CODE TABLE FOR STUDENT ATTENDANCE
+-- ============================================================
+CREATE TABLE IF NOT EXISTS tb_qrcode (
+  id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  siswa_id    INT UNSIGNED NOT NULL,
+  kode_unik   VARCHAR(255) NOT NULL,
+  is_aktif   TINYINT(1)   NOT NULL DEFAULT 1,
+  created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  FOREIGN KEY (siswa_id) REFERENCES tb_siswa(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

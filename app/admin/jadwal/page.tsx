@@ -4,12 +4,21 @@ import React, { useState } from "react";
 import { Calendar, Plus, Edit2, Trash2, Filter } from "lucide-react";
 
 export default function JadwalPage() {
-  const [jadwal, setJadwal] = useState([
-    { id: 1, kelas: "X IPA 1", mapel: "Matematika", guru: "Drs. Ahmad Sobari", hari: "Senin", jam: "07:30 - 09:00", ruang: "Lab 1" },
-    { id: 2, kelas: "X IPA 1", mapel: "Fisika", guru: "Hendra Wijaya, M.Si", hari: "Senin", jam: "09:15 - 10:45", ruang: "Kelas X-1" },
-    { id: 3, kelas: "XI IPA 2", mapel: "Kimia", guru: "Dr. Rahmat Hidayat", hari: "Selasa", jam: "07:30 - 09:00", ruang: "Lab Kimia" },
-    { id: 4, kelas: "XII IPA 1", mapel: "Bahasa Inggris", guru: "Linda Amelia, M.Hum", hari: "Rabu", jam: "10:00 - 11:30", ruang: "Kelas XII-1" },
-  ]);
+  const [jadwal, setJadwal] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    fetch("/api/jadwal")
+      .then(res => res.json())
+      .then(data => {
+        setJadwal(data || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to load jadwal:", err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
@@ -66,17 +75,21 @@ export default function JadwalPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {jadwal.map((j) => (
+              {loading ? (
+                <tr><td colSpan={6} className="py-4 text-center text-slate-500">Memuat data...</td></tr>
+              ) : jadwal.length === 0 ? (
+                <tr><td colSpan={6} className="py-4 text-center text-slate-500">Belum ada data jadwal.</td></tr>
+              ) : jadwal.map((j) => (
                 <tr key={j.id} className="text-xs hover:bg-slate-50/50">
-                  <td className="py-4 font-bold text-primary text-sm">{j.kelas}</td>
-                  <td className="py-4 font-bold text-slate-700">{j.mapel}</td>
-                  <td className="py-4 font-semibold text-slate-500">{j.guru}</td>
+                  <td className="py-4 font-bold text-primary text-sm">{j.nama_kelas || j.kelas_id}</td>
+                  <td className="py-4 font-bold text-slate-700">{j.mata_pelajaran_nama}</td>
+                  <td className="py-4 font-semibold text-slate-500">{j.guru_nama}</td>
                   <td className="py-4">
                     <span className="inline-flex rounded-lg bg-wedding-pink/10 border border-wedding-pink/20 px-2 py-1 font-semibold text-wedding-pink-dark font-mono">
-                      {j.hari}, {j.jam}
+                      {j.hari}, {j.jam_mulai.substring(0, 5)} - {j.jam_selesai.substring(0, 5)}
                     </span>
                   </td>
-                  <td className="py-4 text-muted font-semibold">{j.ruang}</td>
+                  <td className="py-4 text-muted font-semibold">{j.ruangan}</td>
                   <td className="py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-primary transition-colors">

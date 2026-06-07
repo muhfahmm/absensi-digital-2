@@ -18,64 +18,59 @@ import {
 } from "lucide-react";
 
 export default function AdminDashboard() {
+  const [data, setData] = React.useState<any>(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    fetch("/api/dashboard")
+      .then(res => res.json())
+      .then(resData => {
+        setData(resData);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to load dashboard:", err);
+        setLoading(false);
+      });
+  }, []);
+
   const stats = [
     {
       title: "Hadir Hari Ini",
-      count: "115 / 120",
-      percentage: "95.8%",
+      count: loading ? "..." : `${data?.stats?.siswa?.hadir || 0} / ${data?.stats?.siswa?.total || 0}`,
+      percentage: loading ? "..." : data?.stats?.siswa?.total ? `${Math.round(((data?.stats?.siswa?.hadir || 0) / data?.stats?.siswa?.total) * 100)}%` : "0%",
       color: "bg-wedding-sage/15 text-wedding-sage border-wedding-sage/30",
       icon: UserCheck,
       desc: "Siswa telah melakukan check-in",
     },
     {
       title: "Izin & Sakit",
-      count: "3 Siswa",
-      percentage: "2.5%",
+      count: loading ? "..." : `${data?.stats?.siswa?.izinSakit || 0} Siswa`,
+      percentage: loading ? "..." : data?.stats?.siswa?.total ? `${Math.round(((data?.stats?.siswa?.izinSakit || 0) / data?.stats?.siswa?.total) * 100)}%` : "0%",
       color: "bg-amber-100 text-amber-600 border-amber-200",
       icon: FileClock,
-      desc: "2 Izin, 1 Sakit (butuh approval)",
+      desc: "Siswa izin atau sakit",
     },
     {
       title: "Tanpa Keterangan",
-      count: "2 Siswa",
-      percentage: "1.7%",
+      count: loading ? "..." : `${data?.stats?.siswa?.alpha || 0} Siswa`,
+      percentage: loading ? "..." : data?.stats?.siswa?.total ? `${Math.round(((data?.stats?.siswa?.alpha || 0) / data?.stats?.siswa?.total) * 100)}%` : "0%",
       color: "bg-rose-100 text-rose-600 border-rose-200",
       icon: UserX,
       desc: "Belum melakukan absensi pagi",
     },
     {
       title: "Kehadiran Guru",
-      count: "10 / 10",
-      percentage: "100%",
+      count: loading ? "..." : `${data?.stats?.guru?.hadir || 0} / ${data?.stats?.guru?.total || 0}`,
+      percentage: loading ? "..." : data?.stats?.guru?.total ? `${Math.round(((data?.stats?.guru?.hadir || 0) / data?.stats?.guru?.total) * 100)}%` : "0%",
       color: "bg-wedding-pink/20 text-wedding-pink-dark border-wedding-pink/40",
       icon: Users,
-      desc: "Seluruh staff pengajar hadir",
+      desc: "Kehadiran staff pengajar",
     },
   ];
 
-  const pendingApprovals = [
-    {
-      id: 1,
-      nama: "Aulia Rahma",
-      role: "Siswa - XI IPA 2",
-      jenis: "Sakit",
-      alasan: "Demam tinggi & butuh istirahat (surat dokter terlampir)",
-      tanggal: "07 Juni 2026",
-    },
-    {
-      id: 2,
-      nama: "Budi Santoso",
-      role: "Siswa - X IPS 1",
-      jenis: "Izin",
-      alasan: "Mengikuti kejuaraan taekwondo tingkat provinsi",
-      tanggal: "07 - 09 Juni 2026",
-    },
-  ];
-
-  const unexcusedAbsences = [
-    { nis: "102401", nama: "Dian Pratama", kelas: "XII IPA 1", status: "Belum Absen", telp: "0812-3456-7890" },
-    { nis: "102422", nama: "Farhan Malik", kelas: "XI IPS 3", status: "Belum Absen", telp: "0821-9876-5432" },
-  ];
+  const pendingApprovals = data?.pendingApprovals || [];
+  const unexcusedAbsences = data?.unexcusedAbsences || [];
 
   return (
     <div className="space-y-8 animate-[fadeIn_0.3s_ease]">
@@ -262,7 +257,9 @@ export default function AdminDashboard() {
           </div>
 
           <div className="space-y-3">
-            {pendingApprovals.map((izin) => (
+            {pendingApprovals.length === 0 ? (
+              <div className="text-center py-4 text-slate-500 text-xs">Belum ada izin pending.</div>
+            ) : pendingApprovals.map((izin: any) => (
               <div
                 key={izin.id}
                 className="rounded-xl border border-wedding-pink/10 bg-wedding-bg/30 p-4 hover:border-wedding-pink/40 transition-colors duration-200"
@@ -270,15 +267,15 @@ export default function AdminDashboard() {
                 <div className="flex justify-between items-start">
                   <div>
                     <h4 className="text-sm font-bold text-primary leading-tight">{izin.nama}</h4>
-                    <span className="text-xs text-muted font-medium">{izin.role}</span>
+                    <span className="text-xs text-muted font-medium">{izin.role_detail}</span>
                   </div>
                   <span className="inline-flex rounded-full bg-accent/20 px-2 py-0.5 text-[10px] font-bold text-accent-dark">
-                    {izin.jenis}
+                    {izin.jenis_izin}
                   </span>
                 </div>
                 <p className="mt-2 text-xs text-slate-600 line-clamp-2 leading-relaxed">"{izin.alasan}"</p>
                 <div className="mt-3 flex items-center justify-between border-t border-wedding-pink/20 pt-3">
-                  <span className="text-[10px] font-bold text-muted uppercase">{izin.tanggal}</span>
+                  <span className="text-[10px] font-bold text-muted uppercase">{new Date(izin.created_at).toLocaleDateString()}</span>
                   <button className="flex items-center gap-1 text-[11px] font-bold text-primary hover:text-accent transition-colors">
                     <span>Proses Izin</span>
                     <ArrowRight size={12} />
@@ -309,7 +306,9 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {unexcusedAbsences.map((siswa, idx) => (
+                {unexcusedAbsences.length === 0 ? (
+                  <tr><td colSpan={4} className="py-4 text-center text-slate-500">Semua siswa sudah absen.</td></tr>
+                ) : unexcusedAbsences.map((siswa: any, idx: number) => (
                   <tr key={idx} className="text-xs group hover:bg-slate-50/50">
                     <td className="py-3">
                       <p className="font-bold text-primary leading-tight">{siswa.nama}</p>
@@ -318,7 +317,7 @@ export default function AdminDashboard() {
                     <td className="py-3 font-semibold text-slate-600">{siswa.kelas}</td>
                     <td className="py-3">
                       <span className="inline-flex rounded-full bg-rose-50 border border-rose-100 px-2 py-0.5 font-bold text-rose-600">
-                        {siswa.status}
+                        Belum Absen
                       </span>
                     </td>
                     <td className="py-3 text-right">

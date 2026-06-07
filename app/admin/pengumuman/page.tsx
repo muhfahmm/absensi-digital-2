@@ -4,11 +4,21 @@ import React, { useState } from "react";
 import { Bell, Plus, Edit2, Trash2, Calendar, Search } from "lucide-react";
 
 export default function PengumumanPage() {
-  const [pengumuman, setPengumuman] = useState([
-    { id: 1, judul: "Libur Semester Ganjil 2026/2027", target: "Semua", tanggal: "2026-06-05", status: "Aktif" },
-    { id: 2, judul: "Pembagian Rapor Hasil Belajar", target: "Siswa", tanggal: "2026-06-03", status: "Aktif" },
-    { id: 3, judul: "Rapat Koordinasi Evaluasi Presensi Bulanan", target: "Guru", tanggal: "2026-06-01", status: "Aktif" },
-  ]);
+  const [pengumuman, setPengumuman] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    fetch("/api/pengumuman")
+      .then(res => res.json())
+      .then(data => {
+        setPengumuman(data || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to load pengumuman:", err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
@@ -52,7 +62,11 @@ export default function PengumumanPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {pengumuman.map((p) => (
+              {loading ? (
+                <tr><td colSpan={5} className="py-4 text-center text-slate-500">Memuat data...</td></tr>
+              ) : pengumuman.length === 0 ? (
+                <tr><td colSpan={5} className="py-4 text-center text-slate-500">Belum ada pengumuman.</td></tr>
+              ) : pengumuman.map((p) => (
                 <tr key={p.id} className="text-xs hover:bg-slate-50/50">
                   <td className="py-4 font-bold text-primary text-sm max-w-xs truncate">{p.judul}</td>
                   <td className="py-4">
@@ -64,10 +78,10 @@ export default function PengumumanPage() {
                       {p.target}
                     </span>
                   </td>
-                  <td className="py-4 text-muted font-mono font-semibold">{p.tanggal}</td>
+                  <td className="py-4 text-muted font-mono font-semibold">{new Date(p.created_at).toLocaleDateString()}</td>
                   <td className="py-4">
-                    <span className="inline-flex rounded-full bg-wedding-sage/15 border border-wedding-sage/30 px-2.5 py-0.5 font-bold text-wedding-sage">
-                      {p.status}
+                    <span className={`inline-flex rounded-full px-2.5 py-0.5 font-bold ${p.is_aktif ? 'bg-wedding-sage/15 border border-wedding-sage/30 text-wedding-sage' : 'bg-slate-100 border border-slate-300 text-slate-500'}`}>
+                      {p.is_aktif ? 'Aktif' : 'Nonaktif'}
                     </span>
                   </td>
                   <td className="py-4 text-right">

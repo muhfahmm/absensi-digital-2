@@ -4,17 +4,21 @@ import React, { useState } from "react";
 import { ClipboardCheck, Check, Search, Calendar, Filter, UserCheck, AlertTriangle } from "lucide-react";
 
 export default function AbsensiPage() {
-  const [siswa, setSiswa] = useState([
-    { id: 1, nis: "102401", nama: "Dian Pratama", kelas: "XI IPA 2", status: "Hadir" },
-    { id: 2, nis: "102402", nama: "Budi Santoso", kelas: "XI IPA 2", status: "Izin" },
-    { id: 3, nis: "102403", nama: "Aulia Rahma", kelas: "XI IPA 2", status: "Sakit" },
-    { id: 4, nis: "102404", nama: "Farhan Malik", kelas: "XI IPA 2", status: "Alpha" },
-    { id: 5, nis: "102405", nama: "Gita Lestari", kelas: "XI IPA 2", status: "Hadir" },
-  ]);
+  const [absensi, setAbsensi] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const setStatus = (id: number, status: string) => {
-    setSiswa(siswa.map(s => s.id === id ? { ...s, status } : s));
-  };
+  React.useEffect(() => {
+    fetch("/api/absensi")
+      .then(res => res.json())
+      .then(data => {
+        setAbsensi(data || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to load absensi:", err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
@@ -72,34 +76,30 @@ export default function AbsensiPage() {
                 <th className="pb-3">NIS</th>
                 <th className="pb-3">Nama Siswa</th>
                 <th className="pb-3">Kelas</th>
-                <th className="pb-3 text-center">Kehadiran</th>
+                <th className="pb-3">Tanggal</th>
+                <th className="pb-3 text-center">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {siswa.map((s) => (
+              {loading ? (
+                <tr><td colSpan={5} className="py-4 text-center text-slate-500">Memuat data...</td></tr>
+              ) : absensi.length === 0 ? (
+                <tr><td colSpan={5} className="py-4 text-center text-slate-500">Belum ada data absensi.</td></tr>
+              ) : absensi.map((s) => (
                 <tr key={s.id} className="text-xs hover:bg-slate-50/50">
                   <td className="py-4 font-mono font-semibold text-slate-500">{s.nis}</td>
-                  <td className="py-4 font-bold text-primary text-sm">{s.nama}</td>
-                  <td className="py-4 font-semibold text-slate-600">{s.kelas}</td>
-                  <td className="py-4">
-                    <div className="flex items-center justify-center gap-1">
-                      {[
-                        { label: "Hadir", color: "hover:bg-wedding-sage hover:text-white border-wedding-sage/30 text-wedding-sage bg-wedding-sage/10", activeColor: "bg-wedding-sage text-white border-wedding-sage" },
-                        { label: "Izin", color: "hover:bg-amber-500 hover:text-white border-amber-200 text-amber-600 bg-amber-50", activeColor: "bg-amber-500 text-white border-amber-500" },
-                        { label: "Sakit", color: "hover:bg-sky-500 hover:text-white border-sky-200 text-sky-600 bg-sky-50", activeColor: "bg-sky-500 text-white border-sky-500" },
-                        { label: "Alpha", color: "hover:bg-rose-500 hover:text-white border-rose-200 text-rose-600 bg-rose-50", activeColor: "bg-rose-500 text-white border-rose-500" },
-                      ].map((btn) => (
-                        <button
-                          key={btn.label}
-                          onClick={() => setStatus(s.id, btn.label)}
-                          className={`px-3 py-1.5 rounded-full border text-[10px] font-bold transition-all duration-200 ${
-                            s.status === btn.label ? btn.activeColor : btn.color
-                          }`}
-                        >
-                          {btn.label}
-                        </button>
-                      ))}
-                    </div>
+                  <td className="py-4 font-bold text-primary text-sm">{s.siswa_nama}</td>
+                  <td className="py-4 font-semibold text-slate-600">{s.nama_kelas}</td>
+                  <td className="py-4 text-muted font-mono">{new Date(s.tanggal).toLocaleDateString()}</td>
+                  <td className="py-4 text-center">
+                    <span className={`inline-flex rounded-full px-2.5 py-0.5 font-bold ${
+                      s.status === 'Hadir' ? 'bg-wedding-sage/15 border border-wedding-sage/30 text-wedding-sage' :
+                      s.status === 'Izin' ? 'bg-amber-100 text-amber-600 border border-amber-200' :
+                      s.status === 'Sakit' ? 'bg-sky-100 text-sky-600 border border-sky-200' :
+                      'bg-rose-100 text-rose-600 border border-rose-200'
+                    }`}>
+                      {s.status}
+                    </span>
                   </td>
                 </tr>
               ))}

@@ -4,6 +4,30 @@ import React, { useState } from "react";
 import { Settings, Save, Key, Clock, ShieldCheck, MapPin } from "lucide-react";
 
 export default function PengaturanPage() {
+  const [settings, setSettings] = useState<any>({});
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    fetch("/api/pengaturan")
+      .then(res => res.json())
+      .then(data => {
+        const settingsObj: any = {};
+        if (Array.isArray(data)) {
+          data.forEach(item => {
+            settingsObj[item.kunci] = item.nilai;
+          });
+        }
+        setSettings(settingsObj);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to load pengaturan:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div className="p-8 text-center text-slate-500">Memuat pengaturan...</div>;
+
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
       {/* Header */}
@@ -34,7 +58,7 @@ export default function PengaturanPage() {
               <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Jam Masuk Pagi</label>
               <input
                 type="text"
-                defaultValue="07:00:00"
+                defaultValue={settings.jam_masuk_pagi || "07:00:00"}
                 className="w-full px-4 py-2.5 text-xs rounded-xl border border-wedding-pink/30 focus:border-accent outline-none bg-wedding-bg/10 font-mono text-primary font-bold"
               />
             </div>
@@ -42,7 +66,7 @@ export default function PengaturanPage() {
               <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Toleransi (Menit)</label>
               <input
                 type="number"
-                defaultValue="15"
+                defaultValue={settings.jam_toleransi || "15"}
                 className="w-full px-4 py-2.5 text-xs rounded-xl border border-wedding-pink/30 focus:border-accent outline-none bg-wedding-bg/10 font-mono text-primary font-bold"
               />
             </div>
@@ -59,13 +83,13 @@ export default function PengaturanPage() {
               <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Radius Maksimal (Meter)</label>
               <input
                 type="number"
-                defaultValue="100"
+                defaultValue={settings.radius_absensi || "100"}
                 className="w-full px-4 py-2.5 text-xs rounded-xl border border-wedding-pink/30 focus:border-accent outline-none bg-wedding-bg/10 font-mono text-primary font-bold"
               />
             </div>
             <div className="space-y-1.5 flex flex-col justify-end pb-1">
               <label className="flex items-center gap-2 cursor-pointer select-none">
-                <input type="checkbox" defaultChecked className="rounded border-wedding-pink text-primary focus:ring-accent" />
+                <input type="checkbox" defaultChecked={settings.absensi_gps === "1"} className="rounded border-wedding-pink text-primary focus:ring-accent" />
                 <span className="text-xs font-bold text-slate-600">Aktifkan Validasi GPS</span>
               </label>
             </div>
