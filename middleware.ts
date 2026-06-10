@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get('auth_token')?.value;
   const { pathname } = request.nextUrl;
 
-  const isAuthPage = pathname.startsWith('/admin/auth/login');
+  const isAuthPage = pathname.startsWith('/admin/auth');
   const isAdminPage = pathname.startsWith('/admin');
 
   if (isAdminPage) {

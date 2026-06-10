@@ -15,7 +15,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (pathname === '/admin/auth/login') {
+    if (pathname?.startsWith('/admin/auth')) {
       setLoading(false);
       return;
     }
@@ -40,7 +40,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     router.push('/admin/auth/login');
   };
 
-  if (pathname === '/admin/auth/login') {
+  if (pathname?.startsWith('/admin/auth')) {
     return <div className="font-sans min-h-screen bg-[#FFFFF0]">{children}</div>;
   }
 
