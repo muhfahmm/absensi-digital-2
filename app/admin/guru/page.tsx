@@ -142,7 +142,7 @@ export default function AdminGuruPage() {
           <h1 className="text-3xl font-serif font-bold text-primary">Data Guru</h1>
           <p className="text-xs text-muted">Kelola data staff pengajar dan manajemen akses absensi.</p>
         </div>
-        <button onClick={openAddModal} className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-white hover:bg-primary-soft transition-all duration-200 shadow-md">
+        <button onClick={openAddModal} className="flex items-center gap-2 rounded-xl bg-[#1e3a5f] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#1b3650] transition-all duration-200 shadow-md">
           <Plus size={14} />
           <span>Tambah Guru</span>
         </button>
@@ -177,7 +177,7 @@ export default function AdminGuruPage() {
                 <tr>
                   <td colSpan={6} className="py-8 text-center text-slate-500 space-y-4">
                     <div>Belum ada data guru.</div>
-                    <button onClick={openAddModal} className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-primary-soft transition-colors">
+                    <button onClick={openAddModal} className="inline-flex items-center gap-2 rounded-xl bg-[#1e3a5f] px-4 py-2 text-xs font-bold text-white hover:bg-[#1b3650] transition-colors">
                       <Plus size={14} />
                       <span>Tambah Guru</span>
                     </button>

@@ -5,20 +5,65 @@ import { ClipboardCheck, Check, Search, Calendar, Filter, UserCheck, AlertTriang
 
 export default function AbsensiPage() {
   const [absensi, setAbsensi] = useState<any[]>([]);
+  const [kelas, setKelas] = useState<any[]>([]);
+  const [mapel, setMapel] = useState<any[]>([]);
+  const [date, setDate] = useState<string>(new Date().toISOString().slice(0, 10));
+  const [kelasId, setKelasId] = useState("");
+  const [mataPelajaranId, setMataPelajaranId] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const fetchAbsensi = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (date) params.append("date", date);
+      if (kelasId) params.append("kelas_id", kelasId);
+      if (mataPelajaranId) params.append("mata_pelajaran_id", mataPelajaranId);
+      if (searchQuery) params.append("query", searchQuery);
+
+      const res = await fetch(`/api/absensi?${params.toString()}`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Failed to load absensi:", data);
+        setAbsensi([]);
+      } else if (!Array.isArray(data)) {
+        console.warn("Unexpected absensi response, expected array:", data);
+        setAbsensi([]);
+      } else {
+        setAbsensi(data);
+      }
+    } catch (err) {
+      console.error("Failed to load absensi:", err);
+      setAbsensi([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchFilters = async () => {
+    try {
+      const [kelasRes, mapelRes] = await Promise.all([
+        fetch("/api/kelas").then(res => res.json()),
+        fetch("/api/mapel").then(res => res.json())
+      ]);
+      setKelas(kelasRes || []);
+      setMapel(mapelRes || []);
+      setKelasId(kelasRes?.[0]?.id ?? "");
+      setMataPelajaranId(mapelRes?.[0]?.id ?? "");
+    } catch (err) {
+      console.error("Failed to load filter data:", err);
+    }
+  };
+
   React.useEffect(() => {
-    fetch("/api/absensi")
-      .then(res => res.json())
-      .then(data => {
-        setAbsensi(data || []);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Failed to load absensi:", err);
-        setLoading(false);
-      });
+    fetchFilters();
   }, []);
+
+  React.useEffect(() => {
+    fetchAbsensi();
+  }, [date, kelasId, mataPelajaranId, searchQuery]);
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
@@ -44,17 +89,29 @@ export default function AbsensiPage() {
           <div className="flex flex-wrap gap-2.5 items-center">
             <input
               type="date"
-              defaultValue="2026-06-07"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
               className="px-3.5 py-2 text-xs rounded-xl border border-wedding-pink/30 outline-none bg-wedding-bg/20 font-semibold text-primary"
             />
-            <select className="px-3.5 py-2 text-xs rounded-xl border border-wedding-pink/30 outline-none bg-wedding-bg/20 font-semibold text-primary">
-              <option>XI IPA 2</option>
-              <option>X IPA 1</option>
-              <option>XII IPA 1</option>
+            <select
+              value={kelasId}
+              onChange={(e) => setKelasId(e.target.value)}
+              className="px-3.5 py-2 text-xs rounded-xl border border-wedding-pink/30 outline-none bg-wedding-bg/20 font-semibold text-primary"
+            >
+              <option value="">Semua Kelas</option>
+              {kelas.map((item) => (
+                <option key={item.id} value={item.id}>{item.nama_kelas}</option>
+              ))}
             </select>
-            <select className="px-3.5 py-2 text-xs rounded-xl border border-wedding-pink/30 outline-none bg-wedding-bg/20 font-semibold text-primary">
-              <option>Matematika - Drs. Ahmad Sobari</option>
-              <option>Fisika - Hendra Wijaya, M.Si</option>
+            <select
+              value={mataPelajaranId}
+              onChange={(e) => setMataPelajaranId(e.target.value)}
+              className="px-3.5 py-2 text-xs rounded-xl border border-wedding-pink/30 outline-none bg-wedding-bg/20 font-semibold text-primary"
+            >
+              <option value="">Semua Mata Pelajaran</option>
+              {mapel.map((item) => (
+                <option key={item.id} value={item.id}>{item.nama}</option>
+              ))}
             </select>
           </div>
 
@@ -63,6 +120,8 @@ export default function AbsensiPage() {
             <input
               type="text"
               placeholder="Cari siswa..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-4 py-2 text-xs rounded-xl border border-wedding-pink/30 focus:border-accent outline-none bg-wedding-bg/20 font-medium"
             />
           </div>
