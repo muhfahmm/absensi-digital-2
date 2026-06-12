@@ -12,30 +12,59 @@ export default function AbsensiPage() {
   const [mataPelajaranId, setMataPelajaranId] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const fetchAbsensi = async () => {
     setLoading(true);
+    setFetchError(null);
     try {
       const params = new URLSearchParams();
       if (date) params.append("date", date);
       if (kelasId) params.append("kelas_id", kelasId);
       if (mataPelajaranId) params.append("mata_pelajaran_id", mataPelajaranId);
       if (searchQuery) params.append("query", searchQuery);
+      const url = `/api/absensi${params.toString() ? `?${params.toString()}` : ""}`;
 
-      const res = await fetch(`/api/absensi?${params.toString()}`);
-      const data = await res.json();
+      const res = await fetch(url);
+      const text = await res.text();
+      let data: any = null;
+
+      try {
+        data = text ? JSON.parse(text) : null;
+      } catch (parseErr) {
+        console.warn("Absensi: failed to parse response JSON", parseErr, text);
+      }
 
       if (!res.ok) {
-        console.error("Failed to load absensi:", data);
+        const message = data?.error || `Failed to load absensi: ${res.status}`;
+        console.error(message, data || text);
+        setFetchError(message);
         setAbsensi([]);
-      } else if (!Array.isArray(data)) {
-        console.warn("Unexpected absensi response, expected array:", data);
-        setAbsensi([]);
-      } else {
-        setAbsensi(data);
+        return;
       }
+
+      if (Array.isArray(data)) {
+        setAbsensi(data);
+        return;
+      }
+
+      if (Array.isArray(data?.data)) {
+        setAbsensi(data.data);
+        return;
+      }
+
+      if (data === null) {
+        console.warn("Absensi: empty response body treated as no data.");
+        setAbsensi([]);
+        return;
+      }
+
+      console.warn("Absensi: unexpected response format", data);
+      setFetchError("Data absensi tidak tersedia saat ini.");
+      setAbsensi([]);
     } catch (err) {
       console.error("Failed to load absensi:", err);
+      setFetchError("Gagal memuat data absensi.");
       setAbsensi([]);
     } finally {
       setLoading(false);
@@ -129,6 +158,11 @@ export default function AbsensiPage() {
 
         {/* Student List Table */}
         <div className="overflow-x-auto">
+          {fetchError && (
+            <div className="rounded-2xl bg-rose-50 border border-rose-100 px-4 py-3 text-sm text-rose-700 mb-4">
+              {fetchError}
+            </div>
+          )}
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 text-xs font-bold text-primary uppercase tracking-wider">

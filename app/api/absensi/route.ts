@@ -19,7 +19,8 @@ export async function GET(req: Request) {
       FROM tb_absensi_siswa a
       LEFT JOIN tb_siswa s ON a.siswa_id = s.id
       LEFT JOIN tb_kelas k ON s.kelas_id = k.id
-      LEFT JOIN tb_mata_pelajaran m ON a.mata_pelajaran_id = m.id
+      LEFT JOIN tb_jadwal j ON a.jadwal_id = j.id
+      LEFT JOIN tb_mata_pelajaran m ON j.mata_pelajaran_id = m.id
       WHERE 1 = 1
     `;
     const params: any[] = [];
