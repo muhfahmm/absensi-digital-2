@@ -12,13 +12,15 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('antigravity_theme');
-    if (savedTheme === 'dark') {
-      setDarkMode(true);
+    if (savedTheme) {
+      setDarkMode(savedTheme === 'dark');
     }
+    setMounted(true);
   }, []);
 
   const toggleDarkMode = () => {
@@ -60,8 +62,12 @@ export default function RegisterPage() {
     }
   };
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
-    <div className={`min-h-screen flex items-center justify-center p-4 relative overflow-hidden ${darkMode ? 'bg-[#121212]' : 'bg-[#FFFFFF]'}`}>
+    <div suppressHydrationWarning className={`min-h-screen flex items-center justify-center p-4 relative overflow-hidden ${darkMode ? 'bg-[#121212]' : 'bg-[#FFFFFF]'}`}>
       {/* Ornamen dekoratif */}
       <div className={`absolute top-0 right-0 w-64 h-64 ${darkMode ? 'bg-gray-800' : 'bg-[#FBCFE8]'} rounded-full mix-blend-multiply filter blur-3xl opacity-30`}></div>
       <button onClick={toggleDarkMode} className={`absolute top-4 right-4 px-4 py-2 text-sm font-semibold rounded-full transition-colors z-20 ${darkMode ? 'bg-[#2C2C2C] text-[#E1E1E1] hover:bg-[#3C3C3C]' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}>
