@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { UserCheck, UserCog, Search } from "lucide-react";
+import { UserCheck, UserCog, Search, Plus, X } from "lucide-react";
 
 const adminTypes = [
   { key: 'superadmin', label: 'Superadmin' },
@@ -14,6 +14,15 @@ export default function AdminPenggunaPage() {
   const selectedRole = searchParams.get('role') || 'superadmin';
   const [admins, setAdmins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [formError, setFormError] = useState('');
+  const [formData, setFormData] = useState({
+    username: '',
+    nama_lengkap: '',
+    email: '',
+    password: '',
+  });
 
   useEffect(() => {
     const fetchAdmins = async () => {
@@ -38,6 +47,41 @@ export default function AdminPenggunaPage() {
   }, [selectedRole]);
 
   const roleLabel = adminTypes.find((type) => type.key === selectedRole)?.label || 'Admin';
+
+  const openAddModal = () => {
+    setFormError('');
+    setFormData({ username: '', nama_lengkap: '', email: '', password: '' });
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError('');
+    setSubmitLoading(true);
+
+    try {
+      const res = await fetch('/api/pengguna', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData })
+      });
+
+      const json = await res.json();
+      if (!res.ok) {
+        throw new Error(json.error || 'Gagal menambahkan admin');
+      }
+
+      setIsModalOpen(false);
+      setFormData({ username: '', nama_lengkap: '', email: '', password: '' });
+      const refresh = await fetch(`/api/pengguna?role=${selectedRole}`);
+      const refreshed = await refresh.json();
+      setAdmins(refreshed.admins || []);
+    } catch (error: any) {
+      setFormError(error.message || 'Gagal menambahkan admin');
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-8 animate-[fadeIn_0.3s_ease]">
@@ -68,13 +112,22 @@ export default function AdminPenggunaPage() {
       </section>
 
       <section className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="mb-6 flex items-center justify-between gap-4">
+        <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{roleLabel}</p>
             <h2 className="text-xl font-semibold text-slate-900">{loading ? 'Memuat...' : `${admins.length} Akun`}</h2>
           </div>
-          <div className="rounded-2xl bg-slate-100 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600">
-            {selectedRole}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={openAddModal}
+              className="inline-flex items-center gap-2 rounded-2xl bg-[#1e3a5f] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#17354d]"
+            >
+              <Plus size={14} />
+              Tambah Admin Biasa
+            </button>
+            <div className="rounded-2xl bg-slate-100 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600">
+              {selectedRole}
+            </div>
           </div>
         </div>
 
@@ -111,6 +164,87 @@ export default function AdminPenggunaPage() {
           </table>
         </div>
       </section>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 px-4 py-6">
+          <div className="w-full max-w-2xl overflow-hidden rounded-[32px] bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-200 p-6">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Tambah Admin Biasa</p>
+                <h2 className="text-2xl font-semibold text-slate-900">Buat Akun Admin Baru</h2>
+              </div>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="rounded-full p-2 text-slate-500 hover:bg-slate-100"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-6 p-6">
+              {formError && (
+                <div className="rounded-2xl bg-rose-50 border border-rose-200 p-4 text-sm text-rose-700">
+                  {formError}
+                </div>
+              )}
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="space-y-2 text-sm font-semibold text-slate-700">
+                  Username
+                  <input
+                    value={formData.username}
+                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#1e3a5f]"
+                    required
+                  />
+                </label>
+                <label className="space-y-2 text-sm font-semibold text-slate-700">
+                  Nama Lengkap
+                  <input
+                    value={formData.nama_lengkap}
+                    onChange={(e) => setFormData({ ...formData, nama_lengkap: e.target.value })}
+                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#1e3a5f]"
+                    required
+                  />
+                </label>
+                <label className="space-y-2 text-sm font-semibold text-slate-700">
+                  Email
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#1e3a5f]"
+                  />
+                </label>
+                <label className="space-y-2 text-sm font-semibold text-slate-700">
+                  Password
+                  <input
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#1e3a5f]"
+                    required
+                  />
+                </label>
+              </div>
+              <div className="flex flex-wrap gap-3 justify-end">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitLoading}
+                  className="rounded-2xl bg-[#1e3a5f] px-5 py-3 text-sm font-semibold text-white hover:bg-[#17354d] disabled:opacity-60"
+                >
+                  {submitLoading ? 'Menyimpan...' : 'Buat Admin'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
