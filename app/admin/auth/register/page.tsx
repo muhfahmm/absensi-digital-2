@@ -9,6 +9,7 @@ export default function RegisterPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('admin');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -44,6 +45,7 @@ export default function RegisterPage() {
     const formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
+    formData.append('role', role);
 
     try {
       const res = await handleRegister(formData);
@@ -100,6 +102,17 @@ export default function RegisterPage() {
               onChange={(e) => setUsername(e.target.value)}
               required
             />
+          </div>
+          <div>
+            <label className={`block text-sm font-medium mt-2 transition-colors ${darkMode ? 'text-[#A0A0A0]' : 'text-[#4A4A4A]'}`}>Role</label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className={`w-full px-4 py-3 mt-1 rounded-xl border outline-none transition-colors ${darkMode ? 'bg-[#2C2C2C] text-[#E1E1E1] border-[#3C3C3C]' : 'bg-white text-gray-900 border-[#FBCFE8]'}`}
+            >
+              <option value="admin">Admin Biasa (Guru)</option>
+              <option value="superadmin">Super Admin</option>
+            </select>
           </div>
           <div>
             <label className={`block text-sm font-medium transition-colors ${darkMode ? 'text-[#A0A0A0]' : 'text-[#4A4A4A]'}`}>Password</label>

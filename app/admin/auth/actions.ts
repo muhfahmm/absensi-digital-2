@@ -5,6 +5,7 @@ import { query } from "@/app/config/db";
 export async function handleRegister(formData: FormData) {
   const username = formData.get('username') as string;
   const password = formData.get('password') as string;
+  const role = (formData.get('role') as string) || 'admin';
 
   if (!username || !password) {
     return { error: 'Username dan password wajib diisi' };
@@ -24,9 +25,13 @@ export async function handleRegister(formData: FormData) {
     }
 
     // Insert admin baru ke database
+    if (!['admin', 'superadmin'].includes(role)) {
+      return { error: 'Role tidak valid' };
+    }
+
     await query(
-      `INSERT INTO tb_admin (username, password, nama_lengkap, email, role) VALUES (?, ?, ?, ?, 'admin')`,
-      [username, password, username, `${username}@admin.com`]
+      `INSERT INTO tb_admin (username, password, nama_lengkap, email, role) VALUES (?, ?, ?, ?, ?)`,
+      [username, password, username, `${username}@admin.com`, role]
     );
 
     return { success: true };
