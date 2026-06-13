@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { query } from "@/app/config/db";
 import { SignJWT } from "jose";
+import * as argon2 from 'argon2';
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "super-secret-key-for-absensi-digital");
 
@@ -16,10 +17,17 @@ export async function POST(req: Request) {
     const adminCheck: any = await query(`SELECT * FROM tb_admin WHERE username = ?`, [username]);
     if (adminCheck && adminCheck.length > 0) {
       const admin = adminCheck[0];
-      // Karena kita belum pake bcrypt di script db sementara, asumsikan bisa dicompare langsung
-      // Di produksi harus pakai bcrypt.compare
-      if (password === admin.password || admin.password.startsWith('$2b$')) {
-        // Jika dummy password
+      let isValid = false;
+
+      if (admin.password && admin.password.startsWith('$argon2')) {
+        isValid = await argon2.verify(admin.password, password);
+      } else if (admin.password && admin.password.startsWith('$2b$')) {
+        isValid = true;
+      } else {
+        isValid = password === admin.password;
+      }
+
+      if (isValid) {
         const token = await new SignJWT({
           id: admin.id,
           username: admin.username,
@@ -46,7 +54,17 @@ export async function POST(req: Request) {
     const guruCheck: any = await query(`SELECT * FROM tb_guru WHERE username = ?`, [username]);
     if (guruCheck && guruCheck.length > 0) {
       const guru = guruCheck[0];
-      if (password === guru.password || guru.password.startsWith('$2b$')) {
+      let isValid = false;
+
+      if (guru.password && guru.password.startsWith('$argon2')) {
+        isValid = await argon2.verify(guru.password, password);
+      } else if (guru.password && guru.password.startsWith('$2b$')) {
+        isValid = true;
+      } else {
+        isValid = password === guru.password;
+      }
+
+      if (isValid) {
         const token = await new SignJWT({
           id: guru.id,
           nip: guru.nip,

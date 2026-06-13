@@ -1,6 +1,7 @@
 'use server';
 
 import { query } from "@/app/config/db";
+import * as argon2 from 'argon2';
 
 export async function handleRegister(formData: FormData) {
   const username = formData.get('username') as string;
@@ -29,9 +30,11 @@ export async function handleRegister(formData: FormData) {
       return { error: 'Role tidak valid' };
     }
 
+    const hashedPassword = await argon2.hash(password);
+
     await query(
       `INSERT INTO tb_admin (username, password, nama_lengkap, email, role) VALUES (?, ?, ?, ?, ?)`,
-      [username, password, username, `${username}@admin.com`, role]
+      [username, hashedPassword, username, `${username}@admin.com`, role]
     );
 
     return { success: true };
