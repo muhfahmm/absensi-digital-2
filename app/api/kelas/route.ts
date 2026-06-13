@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { query } from "@/app/config/db";
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { requireSuperadmin } from '@/app/lib/auth';
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "super-secret-key-for-absensi-digital");
 
@@ -43,6 +44,8 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const auth = await requireSuperadmin();
+  if (auth) return auth;
   try {
     const body = await req.json();
     const { nama_kelas, jurusan, ruangan, kapasitas, wali_kelas_id, is_aktif } = body;
@@ -64,6 +67,8 @@ export async function POST(req: Request) {
 }
 
 export async function PUT(req: Request) {
+  const auth = await requireSuperadmin();
+  if (auth) return auth;
   try {
     const body = await req.json();
     const { id, nama_kelas, jurusan, ruangan, kapasitas, wali_kelas_id, is_aktif } = body;
@@ -85,6 +90,8 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+  const auth = await requireSuperadmin();
+  if (auth) return auth;
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");

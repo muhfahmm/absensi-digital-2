@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { query } from "@/app/config/db";
+import { requireSuperadmin } from '@/app/lib/auth';
 
 export async function GET() {
   try {
@@ -17,6 +18,8 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const auth = await requireSuperadmin();
+  if (auth) return auth;
   try {
     const body = await req.json();
     const { kode, nama, deskripsi, guru_id, is_aktif } = body;
@@ -38,6 +41,8 @@ export async function POST(req: Request) {
 }
 
 export async function PUT(req: Request) {
+  const auth = await requireSuperadmin();
+  if (auth) return auth;
   try {
     const body = await req.json();
     const { id, kode, nama, deskripsi, guru_id, is_aktif } = body;
@@ -59,6 +64,8 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+  const auth = await requireSuperadmin();
+  if (auth) return auth;
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");

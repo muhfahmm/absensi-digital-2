@@ -49,6 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   const isGuru = user?.role === 'guru';
+  const isSuperadmin = user?.role === 'superadmin';
 
   let menuGroups = [
     {
@@ -74,6 +75,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { href: "/admin/guru", label: "Data Guru", icon: UserCog },
       ],
     },
+    ...(isSuperadmin ? [{
+      title: "Admin Super",
+      items: [
+        { href: "/admin/pengguna", label: "Daftar Admin & Guru", icon: Users },
+      ],
+    }] : []),
     {
       title: "Kehadiran & Laporan",
       items: [
