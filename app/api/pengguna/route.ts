@@ -2,24 +2,27 @@ import { NextResponse } from "next/server";
 import { query } from "@/app/config/db";
 import { requireSuperadmin } from '@/app/lib/auth';
 
-export async function GET() {
+export async function GET(req: Request) {
   const auth = await requireSuperadmin();
   if (auth) return auth;
 
   try {
-    const admins = await query(`
+    const url = new URL(req.url);
+    const role = url.searchParams.get('role');
+    const validRoles = ['superadmin', 'admin'];
+    const whereClause = role && validRoles.includes(role)
+      ? `WHERE role = ?`
+      : '';
+    const sql = `
       SELECT id, username, nama_lengkap, email, role, is_aktif, created_at
       FROM tb_admin
+      ${whereClause}
       ORDER BY FIELD(role, 'superadmin', 'admin'), nama_lengkap ASC
-    `);
+    `;
+    const params = whereClause ? [role] : [];
 
-    const gurus = await query(`
-      SELECT id, nip, username, nama_lengkap, email, status, is_aktif, created_at
-      FROM tb_guru
-      ORDER BY nama_lengkap ASC
-    `);
-
-    return NextResponse.json({ admins, gurus });
+    const admins = await query(sql, params);
+    return NextResponse.json({ admins });
   } catch (error) {
     console.error("Failed to fetch pengguna:", error);
     return NextResponse.json({ error: "Gagal memuat daftar pengguna" }, { status: 500 });

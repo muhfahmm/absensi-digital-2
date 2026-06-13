@@ -76,9 +76,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       ],
     },
     ...(isSuperadmin ? [{
-      title: "Admin Super",
+      title: "Akun Admin",
       items: [
-        { href: "/admin/pengguna", label: "Daftar Admin & Guru", icon: Users },
+        { href: "/admin/pengguna?role=superadmin", label: "Superadmin", icon: Users },
+        { href: "/admin/pengguna?role=admin", label: "Admin Biasa", icon: Users },
       ],
     }] : []),
     {
