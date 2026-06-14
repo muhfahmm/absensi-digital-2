@@ -15,7 +15,7 @@ export async function GET(req: Request) {
       ? `WHERE role = ?`
       : '';
     const sql = `
-      SELECT id, username, nama_lengkap, email, role, is_aktif, created_at
+      SELECT id, username, nama_lengkap, role, is_aktif, created_at
       FROM tb_admin
       ${whereClause}
       ORDER BY FIELD(role, 'superadmin', 'admin'), nama_lengkap ASC
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
   if (auth) return auth;
 
   try {
-    const { username, nama_lengkap, email, password } = await req.json();
+    const { username, nama_lengkap, password } = await req.json();
 
     if (!username || !nama_lengkap || !password) {
       return NextResponse.json({ error: 'Username, nama lengkap, dan password wajib diisi' }, { status: 400 });
@@ -49,8 +49,8 @@ export async function POST(req: Request) {
     const hashedPassword = await argon2.hash(password);
 
     await query(
-      `INSERT INTO tb_admin (username, password, nama_lengkap, email, role, is_aktif) VALUES (?, ?, ?, ?, 'admin', 1)`,
-      [username, hashedPassword, nama_lengkap, email || '']
+      `INSERT INTO tb_admin (username, password, nama_lengkap, role, is_aktif) VALUES (?, ?, ?, 'admin', 1)`,
+      [username, hashedPassword, nama_lengkap]
     );
 
     return NextResponse.json({ success: true });

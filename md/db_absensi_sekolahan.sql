@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS tb_admin (
   username    VARCHAR(50)     NOT NULL UNIQUE,
   password    VARCHAR(255)    NOT NULL,  -- bcrypt hash
   nama_lengkap VARCHAR(100)   NOT NULL DEFAULT '',
-  email       VARCHAR(100)    NOT NULL DEFAULT '',
   foto        VARCHAR(255)    NOT NULL DEFAULT '',
   is_aktif    TINYINT(1)      NOT NULL DEFAULT 1,
   role        ENUM('superadmin', 'admin') NOT NULL DEFAULT 'superadmin',
@@ -28,8 +27,8 @@ CREATE TABLE IF NOT EXISTS tb_admin (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Default admin  (password: admin123  — ganti setelah deploy!)
-INSERT INTO tb_admin (username, password, nama_lengkap, email)
-VALUES ('admin', '$2b$12$placeholder_bcrypt_hash_here', 'Super Admin', 'admin@sekolah.sch.id');
+INSERT INTO tb_admin (username, password, nama_lengkap)
+VALUES ('admin', '$2b$12$placeholder_bcrypt_hash_here', 'Super Admin');
 
 -- ============================================================
 --  4. KELAS

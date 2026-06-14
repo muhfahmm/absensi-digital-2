@@ -20,7 +20,6 @@ export default function AdminPenggunaPage() {
   const [formData, setFormData] = useState({
     username: '',
     nama_lengkap: '',
-    email: '',
     password: '',
   });
 
@@ -50,7 +49,7 @@ export default function AdminPenggunaPage() {
 
   const openAddModal = () => {
     setFormError('');
-    setFormData({ username: '', nama_lengkap: '', email: '', password: '' });
+    setFormData({ username: '', nama_lengkap: '', password: '' });
     setIsModalOpen(true);
   };
 
@@ -72,7 +71,7 @@ export default function AdminPenggunaPage() {
       }
 
       setIsModalOpen(false);
-      setFormData({ username: '', nama_lengkap: '', email: '', password: '' });
+      setFormData({ username: '', nama_lengkap: '', password: '' });
       const refresh = await fetch(`/api/pengguna?role=${selectedRole}`);
       const refreshed = await refresh.json();
       setAdmins(refreshed.admins || []);
@@ -137,25 +136,23 @@ export default function AdminPenggunaPage() {
               <tr>
                 <th className="py-3 px-3">Nama</th>
                 <th className="py-3 px-3">Username</th>
-                <th className="py-3 px-3">Email</th>
                 <th className="py-3 px-3">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="py-6 text-center text-slate-500">Memuat...</td>
+                  <td colSpan={3} className="py-6 text-center text-slate-500">Memuat...</td>
                 </tr>
               ) : admins.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="py-6 text-center text-slate-500">Belum ada akun untuk tipe ini.</td>
+                  <td colSpan={3} className="py-6 text-center text-slate-500">Belum ada akun untuk tipe ini.</td>
                 </tr>
               ) : (
                 admins.map((admin) => (
                   <tr key={admin.id}>
                     <td className="py-4 px-3 font-semibold text-slate-900">{admin.nama_lengkap || '-'}</td>
                     <td className="py-4 px-3 text-slate-600">{admin.username}</td>
-                    <td className="py-4 px-3 text-slate-600">{admin.email || '-'}</td>
                     <td className="py-4 px-3 text-slate-600">{admin.is_aktif ? 'Aktif' : 'Nonaktif'}</td>
                   </tr>
                 ))
@@ -203,15 +200,6 @@ export default function AdminPenggunaPage() {
                     onChange={(e) => setFormData({ ...formData, nama_lengkap: e.target.value })}
                     className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#1e3a5f]"
                     required
-                  />
-                </label>
-                <label className="space-y-2 text-sm font-semibold text-slate-700">
-                  Email
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#1e3a5f]"
                   />
                 </label>
                 <label className="space-y-2 text-sm font-semibold text-slate-700">

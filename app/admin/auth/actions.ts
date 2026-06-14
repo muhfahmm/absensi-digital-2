@@ -33,8 +33,8 @@ export async function handleRegister(formData: FormData) {
     const hashedPassword = await argon2.hash(password);
 
     await query(
-      `INSERT INTO tb_admin (username, password, nama_lengkap, email, role) VALUES (?, ?, ?, ?, ?)`,
-      [username, hashedPassword, username, `${username}@admin.com`, role]
+      `INSERT INTO tb_admin (username, password, nama_lengkap, role) VALUES (?, ?, ?, ?)`,
+      [username, hashedPassword, username, role]
     );
 
     return { success: true };
