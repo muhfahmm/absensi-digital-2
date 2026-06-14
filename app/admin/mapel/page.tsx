@@ -14,9 +14,7 @@ export default function MapelPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
-    kode: "",
     nama: "",
-    deskripsi: "",
     guru_id: ""
   });
   const [error, setError] = useState("");
@@ -45,9 +43,7 @@ export default function MapelPage() {
   const openAddModal = () => {
     setFormData({
       id: "",
-      kode: "",
       nama: "",
-      deskripsi: "",
       guru_id: ""
     });
     setIsEditMode(false);
@@ -58,9 +54,7 @@ export default function MapelPage() {
   const openEditModal = (item: any) => {
     setFormData({
       id: item.id,
-      kode: item.kode,
       nama: item.nama,
-      deskripsi: item.deskripsi || "",
       guru_id: item.guru_id || ""
     });
     setIsEditMode(true);
@@ -116,8 +110,7 @@ export default function MapelPage() {
 
   const filteredMapel = mapel.filter(
     (m) =>
-      m.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      m.kode.toLowerCase().includes(searchQuery.toLowerCase())
+      m.nama.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -159,7 +152,6 @@ export default function MapelPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 text-xs font-bold text-primary uppercase tracking-wider">
-                <th className="pb-3">Kode</th>
                 <th className="pb-3">Mata Pelajaran</th>
                 <th className="pb-3">Guru Pengampu</th>
                 <th className="pb-3 text-right">Aksi</th>
@@ -172,7 +164,6 @@ export default function MapelPage() {
                 <tr><td colSpan={5} className="py-4 text-center text-slate-500">Belum ada mata pelajaran.</td></tr>
               ) : filteredMapel.map((m) => (
                 <tr key={m.id} className="text-xs hover:bg-slate-50/50">
-                  <td className="py-4 font-mono font-bold text-accent-dark">{m.kode}</td>
                   <td className="py-4 font-bold text-primary text-sm">{m.nama}</td>
                   <td className="py-4 font-semibold text-slate-600">{m.guru_nama || '-'}</td>
                   <td className="py-4 text-right">
@@ -218,17 +209,6 @@ export default function MapelPage() {
             )}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-primary uppercase mb-1">Kode Pelajaran</label>
-                <input 
-                  type="text"
-                  required
-                  placeholder="Contoh: MP-001, IPA-X"
-                  value={formData.kode}
-                  onChange={e => setFormData({ ...formData, kode: e.target.value })}
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-wedding-pink/30 focus:border-accent outline-none bg-wedding-bg/10 font-medium text-slate-800"
-                />
-              </div>
-              <div>
                 <label className="block text-xs font-bold text-primary uppercase mb-1">Nama Pelajaran</label>
                 <input 
                   type="text"
@@ -237,15 +217,6 @@ export default function MapelPage() {
                   value={formData.nama}
                   onChange={e => setFormData({ ...formData, nama: e.target.value })}
                   className="w-full px-3.5 py-2 text-xs rounded-xl border border-wedding-pink/30 focus:border-accent outline-none bg-wedding-bg/10 font-medium text-slate-800"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-primary uppercase mb-1">Deskripsi</label>
-                <textarea 
-                  placeholder="Tuliskan keterangan singkat..."
-                  value={formData.deskripsi}
-                  onChange={e => setFormData({ ...formData, deskripsi: e.target.value })}
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-wedding-pink/30 focus:border-accent outline-none bg-wedding-bg/10 font-medium text-slate-800 h-20"
                 />
               </div>
               <div>

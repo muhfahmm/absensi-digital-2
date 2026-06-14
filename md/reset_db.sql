@@ -12,7 +12,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- Drop tables dalam urutan yang benar (dari yang paling dependent ke least dependent)
 -- Tabel yang bergantung pada tabel lain harus dihapus terlebih dahulu
 
--- 1. Drop log dan rekap pertama
+-- 1. Drop log dan rekap pertama (leaf tables)
 DROP TABLE IF EXISTS tb_log_aktivitas;
 DROP TABLE IF EXISTS tb_rekap_absensi;
 
@@ -27,25 +27,25 @@ DROP TABLE IF EXISTS tb_absensi_guru;
 DROP TABLE IF EXISTS tb_izin;
 DROP TABLE IF EXISTS tb_notifikasi;
 
--- 5. Drop konten pages
+-- 5. Drop konten pages (pengumuman bergantung pada admin)
 DROP TABLE IF EXISTS tb_pengumuman;
 DROP TABLE IF EXISTS tb_slider;
 DROP TABLE IF EXISTS tb_galeri;
 
--- 6. Drop jadwal (bergantung pada kelas, mapel, guru)
+-- 6. Drop jadwal PERTAMA (bergantung pada kelas, mapel, guru)
 DROP TABLE IF EXISTS tb_jadwal;
 
--- 7. Drop mata pelajaran (bergantung pada guru)
-DROP TABLE IF EXISTS tb_mata_pelajaran;
-
--- 8. Drop siswa (bergantung pada kelas)
+-- 7. Drop siswa (bergantung pada kelas)
 DROP TABLE IF EXISTS tb_siswa;
 
--- 9. Drop kelas (bergantung pada guru)
+-- 8. Drop kelas (bergantung pada guru)
 DROP TABLE IF EXISTS tb_kelas;
 
--- 10. Drop guru
+-- 9. Drop guru (bergantung pada mapel)
 DROP TABLE IF EXISTS tb_guru;
+
+-- 10. Drop mata pelajaran
+DROP TABLE IF EXISTS tb_mata_pelajaran;
 
 -- 11. Drop base tables
 DROP TABLE IF EXISTS tb_tahun_ajaran;

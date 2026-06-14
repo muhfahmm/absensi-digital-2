@@ -9,9 +9,12 @@ import QRCode from 'qrcode';
 export async function GET() {
   try {
     const data = await query(`
-      SELECT *
-      FROM tb_guru
-      ORDER BY nama_lengkap ASC
+      SELECT 
+        g.*,
+        m.nama as mapel_nama
+      FROM tb_guru g
+      LEFT JOIN tb_mata_pelajaran m ON g.mapel_id = m.id
+      ORDER BY g.nama_lengkap ASC
     `);
     return NextResponse.json(data);
   } catch (error) {
@@ -23,24 +26,13 @@ export async function GET() {
 export async function POST(req: Request) {
   const auth = await requireSuperadmin();
   if (auth) return auth;
+  
   let fileName: string | null = null;
   let filePath: string | null = null;
+  
   try {
     const body = await req.json();
-    const {
-      nip,
-      nama_lengkap,
-      jenis_kelamin,
-      tanggal_lahir,
-      alamat,
-      telepon,
-      email,
-      foto,
-      mapel_id,
-      username,
-      password,
-      is_aktif
-    } = body;
+    const { nip, nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, telepon, email, foto, mapel_id, is_admin, username, password, is_aktif } = body;
 
     if (!nip || !nama_lengkap || !jenis_kelamin) {
       return NextResponse.json({ error: "NIP, Nama Lengkap, dan Jenis Kelamin wajib diisi" }, { status: 400 });
@@ -48,61 +40,39 @@ export async function POST(req: Request) {
 
     const finalUsername = username || nip;
     const finalPassword = password || "guru123";
-
     const qrcode = randomUUID();
 
-    // ensure qrcodes directory exists
     const qrcodesDir = path.join(process.cwd(), 'public', 'qrcodes');
-    try {
-      await fs.mkdir(qrcodesDir, { recursive: true });
-    } catch (e) {}
+    await fs.mkdir(qrcodesDir, { recursive: true }).catch(() => {});
 
-    // generate png file for QR code
     fileName = `${qrcode}.png`;
     filePath = path.join(qrcodesDir, fileName);
+    
     try {
       await QRCode.toFile(filePath, qrcode, { type: 'png', width: 300 });
     } catch (err) {
-      console.error('Failed to generate QR image:', err);
-    }
-
-    let selectedMapelName = "";
-    if (mapel_id) {
-      const mapelRows: any[] = await query(`SELECT nama FROM tb_mata_pelajaran WHERE id = ?`, [mapel_id]);
-      selectedMapelName = mapelRows[0]?.nama || "";
+      console.error('Failed to generate QR:', err);
     }
 
     const result: any = await query(
-      `INSERT INTO tb_guru (nip, nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, telepon, email, foto, mata_pelajaran, username, password, is_aktif, qrcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        nip,
-        nama_lengkap,
-        jenis_kelamin,
-        tanggal_lahir || null,
-        alamat || "",
-        telepon || "",
-        email || "",
-        foto || "",
-        selectedMapelName,
-        finalUsername,
-        finalPassword,
-        is_aktif !== undefined ? is_aktif : 1,
-        fileName
-      ]
+      `INSERT INTO tb_guru (nip, nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, telepon, email, foto, mapel_id, is_admin, username, password, is_aktif, qrcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [nip, nama_lengkap, jenis_kelamin, tanggal_lahir || null, alamat || "", telepon || "", email || "", foto || "", mapel_id || null, is_admin || 0, finalUsername, finalPassword, is_aktif !== undefined ? is_aktif : 1, fileName]
     );
+    
     return NextResponse.json({ success: true, id: result.insertId, qrcode: fileName, qrcode_url: `/qrcodes/${fileName}` });
   } catch (error: any) {
     console.error("Failed to create guru:", error);
-    // cleanup generated file if DB insert failed
-    try {
-      if (filePath) await fs.unlink(filePath).catch(() => {});
-    } catch (e) {}
+    
+    if (filePath) {
+      try {
+        await fs.unlink(filePath);
+      } catch (e) {}
+    }
+    
     if (error.code === "ER_DUP_ENTRY") {
       return NextResponse.json({ error: "NIP atau Username sudah digunakan" }, { status: 400 });
     }
-    return NextResponse.json({ error: "Failed to create data" }, { status: 500 });
-  }
-}
+    
     return NextResponse.json({ error: "Failed to create data" }, { status: 500 });
   }
 }
@@ -110,23 +80,10 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
   const auth = await requireSuperadmin();
   if (auth) return auth;
+  
   try {
     const body = await req.json();
-    const {
-      id,
-      nip,
-      nama_lengkap,
-      jenis_kelamin,
-      tanggal_lahir,
-      alamat,
-      telepon,
-      email,
-      foto,
-      mapel_id,
-      username,
-      password,
-      is_aktif
-    } = body;
+    const { id, nip, nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, telepon, email, foto, mapel_id, is_admin, username, password, is_aktif } = body;
 
     if (!id || !nip || !nama_lengkap || !jenis_kelamin) {
       return NextResponse.json({ error: "ID, NIP, Nama Lengkap, dan Jenis Kelamin wajib diisi" }, { status: 400 });
@@ -134,26 +91,8 @@ export async function PUT(req: Request) {
 
     const finalUsername = username || nip;
 
-    let selectedMapelName = "";
-    if (mapel_id) {
-      const mapelRows: any[] = await query(`SELECT nama FROM tb_mata_pelajaran WHERE id = ?`, [mapel_id]);
-      selectedMapelName = mapelRows[0]?.nama || "";
-    }
-
-    let sql = `UPDATE tb_guru SET nip = ?, nama_lengkap = ?, jenis_kelamin = ?, tanggal_lahir = ?, alamat = ?, telepon = ?, email = ?, foto = ?, mata_pelajaran = ?, username = ?, is_aktif = ?`;
-    const params = [
-      nip,
-      nama_lengkap,
-      jenis_kelamin,
-      tanggal_lahir || null,
-      alamat || "",
-      telepon || "",
-      email || "",
-      foto || "",
-      selectedMapelName,
-      finalUsername,
-      is_aktif !== undefined ? is_aktif : 1
-    ];
+    let sql = `UPDATE tb_guru SET nip = ?, nama_lengkap = ?, jenis_kelamin = ?, tanggal_lahir = ?, alamat = ?, telepon = ?, email = ?, foto = ?, mapel_id = ?, is_admin = ?, username = ?, is_aktif = ?`;
+    const params = [nip, nama_lengkap, jenis_kelamin, tanggal_lahir || null, alamat || "", telepon || "", email || "", foto || "", mapel_id || null, is_admin || 0, finalUsername, is_aktif !== undefined ? is_aktif : 1];
 
     if (password) {
       sql += `, password = ?`;
@@ -164,13 +103,14 @@ export async function PUT(req: Request) {
     params.push(id);
 
     await query(sql, params);
-
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("Failed to update guru:", error);
+    
     if (error.code === "ER_DUP_ENTRY") {
       return NextResponse.json({ error: "NIP atau Username sudah digunakan" }, { status: 400 });
     }
+    
     return NextResponse.json({ error: "Failed to update data" }, { status: 500 });
   }
 }
@@ -178,6 +118,7 @@ export async function PUT(req: Request) {
 export async function DELETE(req: Request) {
   const auth = await requireSuperadmin();
   if (auth) return auth;
+  
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
@@ -193,4 +134,3 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Failed to delete data" }, { status: 500 });
   }
 }
-

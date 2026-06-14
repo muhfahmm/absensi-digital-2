@@ -23,6 +23,7 @@ export default function AdminGuruPage() {
     email: "",
     foto: "",
     mapel_id: "",
+    is_admin: 0,
     username: "",
     password: "",
     is_aktif: 1
@@ -62,6 +63,7 @@ export default function AdminGuruPage() {
       email: "",
       foto: "",
       mapel_id: "",
+      is_admin: 0,
       username: "",
       password: "",
       is_aktif: 1
@@ -85,6 +87,7 @@ export default function AdminGuruPage() {
       email: item.email || "",
       foto: item.foto || "",
       mapel_id: item.mapel_id || "",
+      is_admin: item.is_admin || 0,
       username: item.username || item.nip,
       password: "",
       is_aktif: item.is_aktif
@@ -208,6 +211,7 @@ export default function AdminGuruPage() {
                 <th className="pb-3">Nama Guru</th>
                 <th className="pb-3">QR</th>
                 <th className="pb-3">Mata Pelajaran</th>
+                <th className="pb-3">Status</th>
                 <th className="pb-3">Telepon</th>
                 <th className="pb-3 text-right">Aksi</th>
               </tr>
@@ -246,6 +250,18 @@ export default function AdminGuruPage() {
                     )}
                   </td>
                   <td className="py-4 font-semibold text-slate-600">{g.mapel_nama || '-'}</td>
+                  <td className="py-4">
+                    <div className="flex items-center gap-1">
+                      {g.is_aktif ? (
+                        <span className="inline-flex rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 font-bold text-emerald-600 text-[10px]">Aktif</span>
+                      ) : (
+                        <span className="inline-flex rounded-full bg-slate-100 border border-slate-200 px-2 py-0.5 font-bold text-slate-600 text-[10px]">Nonaktif</span>
+                      )}
+                      {g.is_admin ? (
+                        <span className="inline-flex rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 font-bold text-amber-600 text-[10px]">Wali</span>
+                      ) : null}
+                    </div>
+                  </td>
                   <td className="py-4 font-semibold text-slate-600">{g.telepon || '-'}</td>
                   <td className="py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
@@ -358,6 +374,15 @@ export default function AdminGuruPage() {
                     <option value={1}>Aktif</option>
                     <option value={0}>Nonaktif</option>
                   </select>
+                </label>
+                <label className="space-y-2 text-xs font-semibold text-slate-700 flex items-center gap-3 md:col-span-1">
+                  <input
+                    type="checkbox"
+                    checked={formData.is_admin === 1}
+                    onChange={(e) => setFormData({ ...formData, is_admin: e.target.checked ? 1 : 0 })}
+                    className="h-4 w-4 rounded border-wedding-pink/30 text-primary focus:ring-accent cursor-pointer"
+                  />
+                  <span className="mt-0">Bisa Menjadi Wali Kelas/Mentor</span>
                 </label>
               </div>
 

@@ -57,7 +57,8 @@ CREATE TABLE IF NOT EXISTS tb_guru (
   email           VARCHAR(100)  NOT NULL DEFAULT '',
   foto            VARCHAR(255)  NOT NULL DEFAULT '',
   qrcode          VARCHAR(255)  NULL DEFAULT NULL UNIQUE,
-  mata_pelajaran  VARCHAR(100)  NOT NULL DEFAULT '',
+  mapel_id        INT UNSIGNED  NULL,
+  is_admin        TINYINT(1)    NOT NULL DEFAULT 0,
   username        VARCHAR(50)   NOT NULL UNIQUE,
   password        VARCHAR(255)  NOT NULL,
   is_aktif        TINYINT(1)    NOT NULL DEFAULT 1,
@@ -99,14 +100,15 @@ CREATE TABLE IF NOT EXISTS tb_siswa (
 -- ============================================================
 CREATE TABLE IF NOT EXISTS tb_mata_pelajaran (
   id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-  kode        VARCHAR(20)   NOT NULL UNIQUE,
   nama        VARCHAR(100)  NOT NULL,
-  deskripsi   TEXT,
   guru_id     INT UNSIGNED  NULL,
   created_at  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  FOREIGN KEY (guru_id) REFERENCES tb_guru(id) ON DELETE SET NULL
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Add Foreign Key for tb_guru.mapel_id after tb_mata_pelajaran is created
+ALTER TABLE tb_guru
+  ADD CONSTRAINT fk_guru_mapel FOREIGN KEY (mapel_id) REFERENCES tb_mata_pelajaran(id) ON DELETE SET NULL;
 
 -- ============================================================
 --  8. JADWAL PELAJARAN
