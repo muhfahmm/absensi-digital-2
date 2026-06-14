@@ -35,9 +35,7 @@ export async function POST(req: Request) {
       alamat,
       telepon,
       email,
-      mata_pelajaran,
-      jabatan,
-      status,
+      mapel_id,
       username,
       password,
       is_aktif
@@ -67,8 +65,14 @@ export async function POST(req: Request) {
       console.error('Failed to generate QR image:', err);
     }
 
+    let selectedMapelName = "";
+    if (mapel_id) {
+      const mapelRows: any[] = await query(`SELECT nama FROM tb_mata_pelajaran WHERE id = ?`, [mapel_id]);
+      selectedMapelName = mapelRows[0]?.nama || "";
+    }
+
     const result: any = await query(
-      `INSERT INTO tb_guru (nip, nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, telepon, email, mata_pelajaran, jabatan, status, username, password, is_aktif, qrcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO tb_guru (nip, nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, telepon, email, mata_pelajaran, username, password, is_aktif, qrcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         nip,
         nama_lengkap,
@@ -77,9 +81,7 @@ export async function POST(req: Request) {
         alamat || "",
         telepon || "",
         email || "",
-        mata_pelajaran || "",
-        jabatan || "",
-        status || "Honorer",
+        selectedMapelName,
         finalUsername,
         finalPassword,
         is_aktif !== undefined ? is_aktif : 1,
@@ -114,9 +116,7 @@ export async function PUT(req: Request) {
       alamat,
       telepon,
       email,
-      mata_pelajaran,
-      jabatan,
-      status,
+      mapel_id,
       username,
       password,
       is_aktif
@@ -128,7 +128,13 @@ export async function PUT(req: Request) {
 
     const finalUsername = username || nip;
 
-    let sql = `UPDATE tb_guru SET nip = ?, nama_lengkap = ?, jenis_kelamin = ?, tanggal_lahir = ?, alamat = ?, telepon = ?, email = ?, mata_pelajaran = ?, jabatan = ?, status = ?, username = ?, is_aktif = ?`;
+    let selectedMapelName = "";
+    if (mapel_id) {
+      const mapelRows: any[] = await query(`SELECT nama FROM tb_mata_pelajaran WHERE id = ?`, [mapel_id]);
+      selectedMapelName = mapelRows[0]?.nama || "";
+    }
+
+    let sql = `UPDATE tb_guru SET nip = ?, nama_lengkap = ?, jenis_kelamin = ?, tanggal_lahir = ?, alamat = ?, telepon = ?, email = ?, mata_pelajaran = ?, username = ?, is_aktif = ?`;
     const params = [
       nip,
       nama_lengkap,
@@ -137,9 +143,7 @@ export async function PUT(req: Request) {
       alamat || "",
       telepon || "",
       email || "",
-      mata_pelajaran || "",
-      jabatan || "",
-      status || "Honorer",
+      selectedMapelName,
       finalUsername,
       is_aktif !== undefined ? is_aktif : 1
     ];

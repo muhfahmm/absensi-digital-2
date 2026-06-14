@@ -17,8 +17,7 @@ export default function MapelPage() {
     kode: "",
     nama: "",
     deskripsi: "",
-    guru_id: "",
-    is_aktif: 1
+    guru_id: ""
   });
   const [error, setError] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -49,8 +48,7 @@ export default function MapelPage() {
       kode: "",
       nama: "",
       deskripsi: "",
-      guru_id: "",
-      is_aktif: 1
+      guru_id: ""
     });
     setIsEditMode(false);
     setError("");
@@ -63,8 +61,7 @@ export default function MapelPage() {
       kode: item.kode,
       nama: item.nama,
       deskripsi: item.deskripsi || "",
-      guru_id: item.guru_id || "",
-      is_aktif: item.is_aktif
+      guru_id: item.guru_id || ""
     });
     setIsEditMode(true);
     setError("");
@@ -165,7 +162,6 @@ export default function MapelPage() {
                 <th className="pb-3">Kode</th>
                 <th className="pb-3">Mata Pelajaran</th>
                 <th className="pb-3">Guru Pengampu</th>
-                <th className="pb-3">Status</th>
                 <th className="pb-3 text-right">Aksi</th>
               </tr>
             </thead>
@@ -179,11 +175,6 @@ export default function MapelPage() {
                   <td className="py-4 font-mono font-bold text-accent-dark">{m.kode}</td>
                   <td className="py-4 font-bold text-primary text-sm">{m.nama}</td>
                   <td className="py-4 font-semibold text-slate-600">{m.guru_nama || '-'}</td>
-                  <td className="py-4">
-                    <span className={`inline-flex rounded-full px-2.5 py-0.5 font-bold ${m.is_aktif ? 'bg-wedding-sage/15 border border-wedding-sage/30 text-wedding-sage' : 'bg-slate-100 border border-slate-300 text-slate-500'}`}>
-                      {m.is_aktif ? 'Aktif' : 'Nonaktif'}
-                    </span>
-                  </td>
                   <td className="py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button 
@@ -268,17 +259,6 @@ export default function MapelPage() {
                   {gurus.map(g => (
                     <option key={g.id} value={g.id}>{g.nama_lengkap}</option>
                   ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-primary uppercase mb-1">Status</label>
-                <select
-                  value={formData.is_aktif}
-                  onChange={e => setFormData({ ...formData, is_aktif: parseInt(e.target.value) || 0 })}
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-wedding-pink/30 focus:border-accent outline-none bg-wedding-bg/10 font-medium text-slate-800"
-                >
-                  <option value={1}>Aktif</option>
-                  <option value={0}>Nonaktif</option>
                 </select>
               </div>
               <div className="pt-2 flex justify-end gap-2">

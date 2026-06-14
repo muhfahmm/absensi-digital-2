@@ -48,15 +48,15 @@ export async function POST(req: Request) {
   if (auth) return auth;
   try {
     const body = await req.json();
-    const { nama_kelas, jurusan, ruangan, kapasitas, wali_kelas_id, is_aktif } = body;
+    const { nama_kelas, kapasitas, wali_kelas_id } = body;
 
     if (!nama_kelas) {
       return NextResponse.json({ error: "Nama kelas wajib diisi" }, { status: 400 });
     }
 
     const result: any = await query(
-      `INSERT INTO tb_kelas (nama_kelas, jurusan, ruangan, kapasitas, wali_kelas_id, is_aktif) VALUES (?, ?, ?, ?, ?, ?)`,
-      [nama_kelas, jurusan || "", ruangan || "", kapasitas || 30, wali_kelas_id || null, is_aktif !== undefined ? is_aktif : 1]
+      `INSERT INTO tb_kelas (nama_kelas, kapasitas, wali_kelas_id) VALUES (?, ?, ?)`,
+      [nama_kelas, kapasitas || 30, wali_kelas_id || null]
     );
 
     return NextResponse.json({ success: true, id: result.insertId });
@@ -71,15 +71,15 @@ export async function PUT(req: Request) {
   if (auth) return auth;
   try {
     const body = await req.json();
-    const { id, nama_kelas, jurusan, ruangan, kapasitas, wali_kelas_id, is_aktif } = body;
+    const { id, nama_kelas, kapasitas, wali_kelas_id } = body;
 
     if (!id || !nama_kelas) {
       return NextResponse.json({ error: "ID dan Nama kelas wajib diisi" }, { status: 400 });
     }
 
     await query(
-      `UPDATE tb_kelas SET nama_kelas = ?, jurusan = ?, ruangan = ?, kapasitas = ?, wali_kelas_id = ?, is_aktif = ? WHERE id = ?`,
-      [nama_kelas, jurusan || "", ruangan || "", kapasitas || 30, wali_kelas_id || null, is_aktif !== undefined ? is_aktif : 1, id]
+      `UPDATE tb_kelas SET nama_kelas = ?, kapasitas = ?, wali_kelas_id = ? WHERE id = ?`,
+      [nama_kelas, kapasitas || 30, wali_kelas_id || null, id]
     );
 
     return NextResponse.json({ success: true });

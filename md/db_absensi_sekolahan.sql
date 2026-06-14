@@ -36,12 +36,8 @@ VALUES ('admin', '$2b$12$placeholder_bcrypt_hash_here', 'Super Admin');
 CREATE TABLE IF NOT EXISTS tb_kelas (
   id              INT UNSIGNED  NOT NULL AUTO_INCREMENT,
   nama_kelas      VARCHAR(20)   NOT NULL,   -- contoh: X, XI, XII
-  jurusan         VARCHAR(100)  NOT NULL DEFAULT '',
-  ruangan         VARCHAR(50)   NOT NULL DEFAULT '',
   kapasitas       SMALLINT      NOT NULL DEFAULT 30,
   wali_kelas_id   INT UNSIGNED  NULL,
-  -- tahun_ajaran_id column removed as per user request
-  is_aktif        TINYINT(1)    NOT NULL DEFAULT 1,
   created_at      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
@@ -62,8 +58,6 @@ CREATE TABLE IF NOT EXISTS tb_guru (
   foto            VARCHAR(255)  NOT NULL DEFAULT '',
   qrcode          VARCHAR(255)  NULL DEFAULT NULL UNIQUE,
   mata_pelajaran  VARCHAR(100)  NOT NULL DEFAULT '',
-  jabatan         VARCHAR(100)  NOT NULL DEFAULT '',
-  status          ENUM('PNS','Honorer','GTT') NOT NULL DEFAULT 'Honorer',
   username        VARCHAR(50)   NOT NULL UNIQUE,
   password        VARCHAR(255)  NOT NULL,
   is_aktif        TINYINT(1)    NOT NULL DEFAULT 1,
@@ -82,7 +76,6 @@ ALTER TABLE tb_kelas
 CREATE TABLE IF NOT EXISTS tb_siswa (
   id              INT UNSIGNED  NOT NULL AUTO_INCREMENT,
   nis             VARCHAR(20)   NOT NULL UNIQUE,
-  nisn            VARCHAR(20)   NOT NULL DEFAULT '',
   nama_lengkap    VARCHAR(100)  NOT NULL,
   jenis_kelamin   ENUM('L','P') NOT NULL,
   tanggal_lahir   DATE          NULL,
@@ -93,10 +86,8 @@ CREATE TABLE IF NOT EXISTS tb_siswa (
   foto            VARCHAR(255)  NOT NULL DEFAULT '',
   qrcode          VARCHAR(255)  NULL DEFAULT NULL UNIQUE,
   kelas_id        INT UNSIGNED  NULL,
-  -- tahun_ajaran_id column removed as per user request
   username        VARCHAR(50)   NOT NULL UNIQUE,
   password        VARCHAR(255)  NOT NULL,
-  is_aktif        TINYINT(1)    NOT NULL DEFAULT 1,
   created_at      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
@@ -112,7 +103,6 @@ CREATE TABLE IF NOT EXISTS tb_mata_pelajaran (
   nama        VARCHAR(100)  NOT NULL,
   deskripsi   TEXT,
   guru_id     INT UNSIGNED  NULL,
-  is_aktif    TINYINT(1)    NOT NULL DEFAULT 1,
   created_at  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   FOREIGN KEY (guru_id) REFERENCES tb_guru(id) ON DELETE SET NULL

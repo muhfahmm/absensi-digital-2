@@ -14,7 +14,6 @@ export default function AdminSiswaPage() {
   const [formData, setFormData] = useState({
     id: "",
     nis: "",
-    nisn: "",
     nama_lengkap: "",
     jenis_kelamin: "Laki-laki",
     tanggal_lahir: "",
@@ -24,8 +23,7 @@ export default function AdminSiswaPage() {
     email: "",
     kelas_id: "",
     username: "",
-    password: "",
-    is_aktif: 1
+    password: ""
   });
 
   const fetchData = async () => {
@@ -52,7 +50,6 @@ export default function AdminSiswaPage() {
     setFormData({
       id: "",
       nis: "",
-      nisn: "",
       nama_lengkap: "",
       jenis_kelamin: "Laki-laki",
       tanggal_lahir: "",
@@ -62,8 +59,7 @@ export default function AdminSiswaPage() {
       email: "",
       kelas_id: kelas[0]?.id || "",
       username: "",
-      password: "",
-      is_aktif: 1
+      password: ""
     });
     setIsEditMode(false);
     setError("");
@@ -74,7 +70,6 @@ export default function AdminSiswaPage() {
     setFormData({
       id: item.id,
       nis: item.nis,
-      nisn: item.nisn || "",
       nama_lengkap: item.nama_lengkap,
       jenis_kelamin: item.jenis_kelamin || "Laki-laki",
       tanggal_lahir: item.tanggal_lahir || "",
@@ -84,8 +79,7 @@ export default function AdminSiswaPage() {
       email: item.email || "",
       kelas_id: item.kelas_id || kelas[0]?.id || "",
       username: item.username || item.nis,
-      password: "",
-      is_aktif: item.is_aktif
+      password: ""
     });
     setIsEditMode(true);
     setError("");
@@ -171,7 +165,6 @@ export default function AdminSiswaPage() {
                 <th className="pb-3">QR</th>
                 <th className="pb-3">Kelas</th>
                 <th className="pb-3">Telepon</th>
-                <th className="pb-3">Status</th>
                 <th className="pb-3 text-right">Aksi</th>
               </tr>
             </thead>
@@ -203,11 +196,6 @@ export default function AdminSiswaPage() {
                   </td>
                   <td className="py-4 font-semibold text-slate-600">{s.nama_kelas || '-'}</td>
                   <td className="py-4 font-semibold text-slate-600">{s.telepon_ortu || '-'}</td>
-                  <td className="py-4">
-                    <span className={`inline-flex rounded-full px-2.5 py-0.5 font-bold ${s.is_aktif ? 'bg-wedding-sage/15 border border-wedding-sage/30 text-wedding-sage' : 'bg-slate-100 border border-slate-300 text-slate-500'}`}>
-                      {s.is_aktif ? 'Aktif' : 'Nonaktif'}
-                    </span>
-                  </td>
                   <td className="py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button onClick={() => openEditModal(s)} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-primary transition-colors">
@@ -242,10 +230,6 @@ export default function AdminSiswaPage() {
                 <label className="space-y-2 text-xs font-semibold text-slate-700">
                   NIS
                   <input value={formData.nis} onChange={(e) => setFormData({ ...formData, nis: e.target.value })} className="w-full rounded-2xl border border-wedding-pink/30 px-4 py-3 text-sm outline-none focus:border-accent" />
-                </label>
-                <label className="space-y-2 text-xs font-semibold text-slate-700">
-                  NISN
-                  <input value={formData.nisn} onChange={(e) => setFormData({ ...formData, nisn: e.target.value })} className="w-full rounded-2xl border border-wedding-pink/30 px-4 py-3 text-sm outline-none focus:border-accent" />
                 </label>
                 <label className="space-y-2 text-xs font-semibold text-slate-700 md:col-span-2">
                   Nama Lengkap
@@ -294,13 +278,6 @@ export default function AdminSiswaPage() {
                 <label className="space-y-2 text-xs font-semibold text-slate-700">
                   Password{isEditMode ? " (biarkan kosong jika tidak diubah)" : ""}
                   <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full rounded-2xl border border-wedding-pink/30 px-4 py-3 text-sm outline-none focus:border-accent" />
-                </label>
-                <label className="space-y-2 text-xs font-semibold text-slate-700">
-                  Status
-                  <select value={formData.is_aktif} onChange={(e) => setFormData({ ...formData, is_aktif: Number(e.target.value) })} className="w-full rounded-2xl border border-wedding-pink/30 px-4 py-3 text-sm outline-none focus:border-accent">
-                    <option value={1}>Aktif</option>
-                    <option value={0}>Nonaktif</option>
-                  </select>
                 </label>
               </div>
 

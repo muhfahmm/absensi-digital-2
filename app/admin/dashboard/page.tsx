@@ -148,25 +148,21 @@ export default function AdminDashboard() {
               <p className="text-xs text-muted">Statistik rata-rata kehadiran harian siswa</p>
             </div>
             <span className="rounded-full bg-wedding-pink/15 px-3 py-1 text-xs font-semibold text-wedding-pink-dark border border-wedding-pink/30">
-              Rata-rata: 96.2%
+              Rata-rata: {loading ? "..." : `${data?.averageAttendance || 0}%`}
             </span>
           </div>
 
           {/* Simple Inline SVG Bar Chart */}
           <div className="h-64 w-full flex items-end justify-between pt-4 px-2">
-            {[
-              { day: "Senin", val: 95, label: "95%" },
-              { day: "Selasa", val: 97, label: "97%" },
-              { day: "Rabu", val: 94, label: "94%" },
-              { day: "Kamis", val: 98, label: "98%" },
-              { day: "Jumat", val: 96, label: "96%" },
-              { day: "Sabtu", val: 90, label: "90%" },
-              { day: "Minggu", val: 0, label: "Libur" },
-            ].map((item, idx) => (
+            {loading || !data?.chartData ? (
+              <div className="w-full flex items-center justify-center text-muted text-sm">Loading...</div>
+            ) : data.chartData.length === 0 ? (
+              <div className="w-full flex items-center justify-center text-muted text-sm">Belum ada data 7 hari terakhir</div>
+            ) : data.chartData.map((item: any, idx: number) => (
               <div key={idx} className="flex flex-col items-center flex-1 group">
                 <div className="w-full max-w-[28px] bg-slate-100 rounded-t-lg h-48 flex items-end relative overflow-hidden">
                   <div
-                    style={{ height: `${item.val}%` }}
+                    style={{ height: `${Math.max(item.val, 5)}%` }}
                     className="w-full bg-gradient-to-t from-primary to-primary-soft rounded-t-lg group-hover:from-accent group-hover:to-accent-dark transition-all duration-300"
                   />
                   {item.val > 0 && (
@@ -175,7 +171,7 @@ export default function AdminDashboard() {
                     </div>
                   )}
                 </div>
-                <span className="text-[10px] font-bold text-muted mt-2 tracking-wide uppercase">{item.day.substring(0, 3)}</span>
+                <span className="text-[10px] font-bold text-muted mt-2 tracking-wide uppercase">{item.day}</span>
               </div>
             ))}
           </div>
@@ -191,57 +187,58 @@ export default function AdminDashboard() {
           <div className="my-6 flex justify-center">
             {/* Elegant SVG Donut Chart */}
             <div className="relative h-36 w-36">
-              <svg className="h-full w-full transform -rotate-90" viewBox="0 0 36 36">
-                <circle cx="18" cy="18" r="15.915" fill="none" stroke="#f1f5f9" strokeWidth="3" />
-                <circle
-                  cx="18"
-                  cy="18"
-                  r="15.915"
-                  fill="none"
-                  stroke="#1e3a5f"
-                  strokeWidth="3.5"
-                  strokeDasharray="60 100"
-                  strokeDashoffset="0"
-                />
-                <circle
-                  cx="18"
-                  cy="18"
-                  r="15.915"
-                  fill="none"
-                  stroke="#c9a84c"
-                  strokeWidth="3.5"
-                  strokeDasharray="25 100"
-                  strokeDashoffset="-60"
-                />
-                <circle
-                  cx="18"
-                  cy="18"
-                  r="15.915"
-                  fill="none"
-                  stroke="#f9a8d4"
-                  strokeWidth="3.5"
-                  strokeDasharray="15 100"
-                  strokeDashoffset="-85"
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-bold text-primary">95.8%</span>
-                <span className="text-[9px] font-semibold text-muted uppercase tracking-wider">Kehadiran</span>
-              </div>
+              {loading || !data?.classAttendance ? (
+                <div className="absolute inset-0 flex items-center justify-center text-muted text-sm">Loading...</div>
+              ) : (
+                <>
+                  <svg className="h-full w-full transform -rotate-90" viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="15.915" fill="none" stroke="#f1f5f9" strokeWidth="3" />
+                    {(() => {
+                      let offset = 0;
+                      const colors = ["#1e3a5f", "#c9a84c", "#f9a8d4"];
+                      return data.classAttendance.map((cls: any, idx: number) => {
+                        const circumference = 100;
+                        const strokeDash = cls.percentage;
+                        const prevOffset = offset;
+                        offset += strokeDash;
+                        
+                        return (
+                          <circle
+                            key={idx}
+                            cx="18"
+                            cy="18"
+                            r="15.915"
+                            fill="none"
+                            stroke={colors[idx % colors.length]}
+                            strokeWidth="3.5"
+                            strokeDasharray={`${strokeDash} 100`}
+                            strokeDashoffset={-prevOffset}
+                          />
+                        );
+                      });
+                    })()}
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-2xl font-bold text-primary">{data.totalClassAttendance}%</span>
+                    <span className="text-[9px] font-semibold text-muted uppercase tracking-wider">Kehadiran</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
           <div className="space-y-2">
-            {[
-              { label: "Kelas X (98%)", color: "bg-[#1e3a5f]" },
-              { label: "Kelas XI (94%)", color: "bg-[#c9a84c]" },
-              { label: "Kelas XII (96%)", color: "bg-[#f9a8d4]" },
-            ].map((item, idx) => (
-              <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-muted">
-                <span className={`h-2.5 w-2.5 rounded-full ${item.color}`} />
-                <span>{item.label}</span>
-              </div>
-            ))}
+            {loading || !data?.classAttendance || data.classAttendance.length === 0 ? (
+              <div className="text-center py-2 text-slate-500 text-xs">Belum ada data kelas</div>
+            ) : data.classAttendance.map((cls: any, idx: number) => {
+              const colors = ["bg-[#1e3a5f]", "bg-[#c9a84c]", "bg-[#f9a8d4]"];
+              return (
+                <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-muted">
+                  <span className={`h-2.5 w-2.5 rounded-full ${colors[idx % colors.length]}`} />
+                  <span>{cls.nama_kelas} ({cls.percentage}%)</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

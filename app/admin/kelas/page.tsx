@@ -14,11 +14,8 @@ export default function AdminKelasPage() {
   const [formData, setFormData] = useState({
     id: "",
     nama_kelas: "",
-    jurusan: "",
-    ruangan: "",
     kapasitas: 30,
-    wali_kelas_id: "",
-    is_aktif: 1
+    wali_kelas_id: ""
   });
   const [error, setError] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -47,11 +44,8 @@ export default function AdminKelasPage() {
     setFormData({
       id: "",
       nama_kelas: "",
-      jurusan: "",
-      ruangan: "",
       kapasitas: 30,
-      wali_kelas_id: "",
-      is_aktif: 1
+      wali_kelas_id: ""
     });
     setIsEditMode(false);
     setError("");
@@ -62,11 +56,8 @@ export default function AdminKelasPage() {
     setFormData({
       id: item.id,
       nama_kelas: item.nama_kelas,
-      jurusan: item.jurusan || "",
-      ruangan: item.ruangan || "",
       kapasitas: item.kapasitas,
-      wali_kelas_id: item.wali_kelas_id || "",
-      is_aktif: item.is_aktif
+      wali_kelas_id: item.wali_kelas_id || ""
     });
     setIsEditMode(true);
     setError("");
@@ -159,11 +150,8 @@ export default function AdminKelasPage() {
               <thead>
                 <tr className="border-b border-slate-100 text-xs font-bold text-primary uppercase tracking-wider">
                   <th className="pb-3">Nama Kelas</th>
-                  <th className="pb-3">Jurusan</th>
-                  <th className="pb-3">Ruangan</th>
                   <th className="pb-3">Kapasitas</th>
                   <th className="pb-3">Wali Kelas</th>
-                  <th className="pb-3">Status</th>
                   <th className="pb-3 text-right">Aksi</th>
                 </tr>
               </thead>
@@ -171,15 +159,8 @@ export default function AdminKelasPage() {
                 {kelas.map((k, idx) => (
                   <tr key={idx} className="text-xs hover:bg-slate-50/50">
                     <td className="py-4 font-bold text-primary text-sm">{k.nama_kelas}</td>
-                    <td className="py-4 font-semibold text-slate-600">{k.jurusan || '-'}</td>
-                    <td className="py-4 font-semibold text-slate-600">{k.ruangan || '-'}</td>
                     <td className="py-4 font-semibold text-slate-600">{k.kapasitas} Siswa</td>
                     <td className="py-4 font-semibold text-slate-600">{k.wali_kelas_nama || '-'}</td>
-                    <td className="py-4">
-                      <span className={`inline-flex rounded-full px-2.5 py-0.5 font-bold ${k.is_aktif ? 'bg-wedding-sage/15 border border-wedding-sage/30 text-wedding-sage' : 'bg-slate-100 border border-slate-300 text-slate-500'}`}>
-                        {k.is_aktif ? 'Aktif' : 'Nonaktif'}
-                      </span>
-                    </td>
                     <td className="py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button 
@@ -235,37 +216,15 @@ export default function AdminKelasPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-primary uppercase mb-1">Jurusan</label>
+                <label className="block text-xs font-bold text-primary uppercase mb-1">Kapasitas</label>
                 <input 
-                  type="text"
-                  placeholder="Contoh: IPA, IPS, Bahasa"
-                  value={formData.jurusan}
-                  onChange={e => setFormData({ ...formData, jurusan: e.target.value })}
+                  type="number"
+                  min={1}
+                  required
+                  value={formData.kapasitas}
+                  onChange={e => setFormData({ ...formData, kapasitas: parseInt(e.target.value) || 0 })}
                   className="w-full px-3.5 py-2 text-xs rounded-xl border border-wedding-pink/30 focus:border-accent outline-none bg-wedding-bg/10 font-medium text-slate-800"
                 />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-primary uppercase mb-1">Ruangan</label>
-                  <input 
-                    type="text"
-                    placeholder="Contoh: Lab 1, R-102"
-                    value={formData.ruangan}
-                    onChange={e => setFormData({ ...formData, ruangan: e.target.value })}
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-wedding-pink/30 focus:border-accent outline-none bg-wedding-bg/10 font-medium text-slate-800"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-primary uppercase mb-1">Kapasitas</label>
-                  <input 
-                    type="number"
-                    min={1}
-                    required
-                    value={formData.kapasitas}
-                    onChange={e => setFormData({ ...formData, kapasitas: parseInt(e.target.value) || 0 })}
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-wedding-pink/30 focus:border-accent outline-none bg-wedding-bg/10 font-medium text-slate-800"
-                  />
-                </div>
               </div>
               <div>
                 <label className="block text-xs font-bold text-primary uppercase mb-1">Wali Kelas</label>
@@ -278,17 +237,6 @@ export default function AdminKelasPage() {
                   {gurus.map(g => (
                     <option key={g.id} value={g.id}>{g.nama_lengkap}</option>
                   ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-primary uppercase mb-1">Status Keaktifan</label>
-                <select
-                  value={formData.is_aktif}
-                  onChange={e => setFormData({ ...formData, is_aktif: parseInt(e.target.value) || 0 })}
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-wedding-pink/30 focus:border-accent outline-none bg-wedding-bg/10 font-medium text-slate-800"
-                >
-                  <option value={1}>Aktif</option>
-                  <option value={0}>Nonaktif</option>
                 </select>
               </div>
               <div className="pt-2 flex justify-end gap-2">

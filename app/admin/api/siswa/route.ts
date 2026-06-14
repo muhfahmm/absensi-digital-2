@@ -32,7 +32,6 @@ export async function POST(req: Request) {
     const body = await req.json();
     const {
       nis,
-      nisn,
       nama_lengkap,
       jenis_kelamin,
       tanggal_lahir,
@@ -42,8 +41,7 @@ export async function POST(req: Request) {
       email,
       kelas_id,
       username,
-      password,
-      is_aktif
+      password
     } = body;
 
     if (!nis || !nama_lengkap || !jenis_kelamin) {
@@ -70,10 +68,9 @@ export async function POST(req: Request) {
     }
 
     const result: any = await query(
-      `INSERT INTO tb_siswa (nis, nisn, nama_lengkap, jenis_kelamin, tanggal_lahir, tempat_lahir, alamat, telepon_ortu, email, kelas_id, username, password, is_aktif, qrcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO tb_siswa (nis, nama_lengkap, jenis_kelamin, tanggal_lahir, tempat_lahir, alamat, telepon_ortu, email, kelas_id, username, password, qrcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         nis,
-        nisn || "",
         nama_lengkap,
         jenis_kelamin,
         tanggal_lahir || null,
@@ -84,7 +81,6 @@ export async function POST(req: Request) {
         kelas_id || null,
         finalUsername,
         finalPassword,
-        is_aktif !== undefined ? is_aktif : 1,
         fileName
       ]
     );
@@ -109,7 +105,6 @@ export async function PUT(req: Request) {
     const body = await req.json();
     const id = body.id;
     const nis = body.nis;
-    const nisn = body.nisn;
     const nama_lengkap = body.nama_lengkap;
     const jenis_kelamin = body.jenis_kelamin;
     const tanggal_lahir = body.tanggal_lahir;
@@ -120,7 +115,6 @@ export async function PUT(req: Request) {
     const kelas_id = body.kelas_id;
     const username = body.username;
     const password = body.password;
-    const is_aktif = body.is_aktif;
 
     if (!id || !nis || !nama_lengkap || !jenis_kelamin) {
       return NextResponse.json({ error: "ID, NIS, Nama Lengkap, dan Jenis Kelamin wajib diisi" }, { status: 400 });
@@ -128,10 +122,9 @@ export async function PUT(req: Request) {
 
     const finalUsername = username || nis;
 
-    let sql = `UPDATE tb_siswa SET nis = ?, nisn = ?, nama_lengkap = ?, jenis_kelamin = ?, tanggal_lahir = ?, tempat_lahir = ?, alamat = ?, telepon_ortu = ?, email = ?, kelas_id = ?, username = ?, is_aktif = ?`;
+    let sql = `UPDATE tb_siswa SET nis = ?, nama_lengkap = ?, jenis_kelamin = ?, tanggal_lahir = ?, tempat_lahir = ?, alamat = ?, telepon_ortu = ?, email = ?, kelas_id = ?, username = ?`;
     const params = [
       nis,
-      nisn || "",
       nama_lengkap,
       jenis_kelamin,
       tanggal_lahir || null,
@@ -140,8 +133,7 @@ export async function PUT(req: Request) {
       telepon_ortu || "",
       email || "",
       kelas_id || null,
-      finalUsername,
-      is_aktif !== undefined ? is_aktif : 1
+      finalUsername
     ];
 
     if (password) {

@@ -19,20 +19,23 @@ export default function AdminGuruPage() {
     alamat: "",
     telepon: "",
     email: "",
-    mata_pelajaran: "",
-    jabatan: "",
-    status: "Honorer",
+    mapel_id: "",
     username: "",
     password: "",
     is_aktif: 1
   });
 
+  const [mapel, setMapel] = useState<any[]>([]);
+
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/admin/api/guru");
-      const data = await res.json();
-      setGuru(data || []);
+      const [resGuru, resMapel] = await Promise.all([
+        fetch("/admin/api/guru").then(res => res.json()),
+        fetch("/admin/api/mapel").then(res => res.json())
+      ]);
+      setGuru(resGuru || []);
+      setMapel(resMapel || []);
     } catch (err) {
       console.error("Failed to load guru:", err);
     } finally {
@@ -54,9 +57,7 @@ export default function AdminGuruPage() {
       alamat: "",
       telepon: "",
       email: "",
-      mata_pelajaran: "",
-      jabatan: "",
-      status: "Honorer",
+      mapel_id: "",
       username: "",
       password: "",
       is_aktif: 1
@@ -76,9 +77,7 @@ export default function AdminGuruPage() {
       alamat: item.alamat || "",
       telepon: item.telepon || "",
       email: item.email || "",
-      mata_pelajaran: item.mata_pelajaran || "",
-      jabatan: item.jabatan || "",
-      status: item.status || "Honorer",
+      mapel_id: item.mapel_id || "",
       username: item.username || item.nip,
       password: "",
       is_aktif: item.is_aktif
@@ -167,7 +166,6 @@ export default function AdminGuruPage() {
                 <th className="pb-3">QR</th>
                 <th className="pb-3">Mata Pelajaran</th>
                 <th className="pb-3">Telepon</th>
-                <th className="pb-3">Status</th>
                 <th className="pb-3 text-right">Aksi</th>
               </tr>
             </thead>
@@ -197,13 +195,8 @@ export default function AdminGuruPage() {
                       <span className="text-slate-400">-</span>
                     )}
                   </td>
-                  <td className="py-4 font-semibold text-slate-600">{g.mata_pelajaran || '-'}</td>
+                  <td className="py-4 font-semibold text-slate-600">{g.mapel_nama || '-'}</td>
                   <td className="py-4 font-semibold text-slate-600">{g.telepon || '-'}</td>
-                  <td className="py-4">
-                    <span className={`inline-flex rounded-full px-2.5 py-0.5 font-bold ${g.is_aktif ? 'bg-wedding-sage/15 border border-wedding-sage/30 text-wedding-sage' : 'bg-slate-100 border border-slate-300 text-slate-500'}`}>
-                      {g.is_aktif ? 'Aktif' : 'Nonaktif'}
-                    </span>
-                  </td>
                   <td className="py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button onClick={() => openEditModal(g)} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-primary transition-colors">
@@ -268,17 +261,11 @@ export default function AdminGuruPage() {
                 </label>
                 <label className="space-y-2 text-xs font-semibold text-slate-700">
                   Mata Pelajaran
-                  <input value={formData.mata_pelajaran} onChange={(e) => setFormData({ ...formData, mata_pelajaran: e.target.value })} className="w-full rounded-2xl border border-wedding-pink/30 px-4 py-3 text-sm outline-none focus:border-accent" />
-                </label>
-                <label className="space-y-2 text-xs font-semibold text-slate-700">
-                  Jabatan
-                  <input value={formData.jabatan} onChange={(e) => setFormData({ ...formData, jabatan: e.target.value })} className="w-full rounded-2xl border border-wedding-pink/30 px-4 py-3 text-sm outline-none focus:border-accent" />
-                </label>
-                <label className="space-y-2 text-xs font-semibold text-slate-700">
-                  Status
-                  <select value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })} className="w-full rounded-2xl border border-wedding-pink/30 px-4 py-3 text-sm outline-none focus:border-accent">
-                    <option value="Honorer">Honorer</option>
-                    <option value="PNS">PNS</option>
+                  <select value={formData.mapel_id} onChange={(e) => setFormData({ ...formData, mapel_id: e.target.value })} className="w-full rounded-2xl border border-wedding-pink/30 px-4 py-3 text-sm outline-none focus:border-accent">
+                    <option value="">Pilih Mata Pelajaran</option>
+                    {mapel.map((m) => (
+                      <option key={m.id} value={m.id}>{m.nama}</option>
+                    ))}
                   </select>
                 </label>
                 <label className="space-y-2 text-xs font-semibold text-slate-700">
