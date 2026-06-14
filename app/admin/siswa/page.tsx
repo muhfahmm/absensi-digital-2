@@ -11,6 +11,8 @@ export default function AdminSiswaPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fotoFile, setFotoFile] = useState<File | null>(null);
+  const [fotoPreview, setFotoPreview] = useState("");
   const [formData, setFormData] = useState({
     id: "",
     nis: "",
@@ -21,6 +23,7 @@ export default function AdminSiswaPage() {
     alamat: "",
     telepon_ortu: "",
     email: "",
+    foto: "",
     kelas_id: "",
     username: "",
     password: ""
@@ -57,10 +60,13 @@ export default function AdminSiswaPage() {
       alamat: "",
       telepon_ortu: "",
       email: "",
+      foto: "",
       kelas_id: kelas[0]?.id || "",
       username: "",
       password: ""
     });
+    setFotoFile(null);
+    setFotoPreview("");
     setIsEditMode(false);
     setError("");
     setIsModalOpen(true);
@@ -77,10 +83,13 @@ export default function AdminSiswaPage() {
       alamat: item.alamat || "",
       telepon_ortu: item.telepon_ortu || "",
       email: item.email || "",
+      foto: item.foto || "",
       kelas_id: item.kelas_id || kelas[0]?.id || "",
       username: item.username || item.nis,
       password: ""
     });
+    setFotoFile(null);
+    setFotoPreview(item.foto ? item.foto : "");
     setIsEditMode(true);
     setError("");
     setIsModalOpen(true);
@@ -101,18 +110,51 @@ export default function AdminSiswaPage() {
     }
   };
 
+  const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFotoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSubmitLoading(true);
 
     try {
+      let fotoPath = formData.foto;
+
+      // Upload foto jika ada file baru
+      if (fotoFile) {
+        const uploadFormData = new FormData();
+        uploadFormData.append("file", fotoFile);
+        uploadFormData.append("type", "siswa");
+
+        const uploadRes = await fetch("/admin/api/upload", {
+          method: "POST",
+          body: uploadFormData
+        });
+
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) {
+          throw new Error(uploadData.error || "Gagal upload foto");
+        }
+
+        fotoPath = uploadData.path;
+      }
+
       const url = "/admin/api/siswa";
       const method = isEditMode ? "PUT" : "POST";
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ ...formData, foto: fotoPath })
       });
       const data = await res.json();
 
@@ -161,6 +203,7 @@ export default function AdminSiswaPage() {
             <thead>
               <tr className="border-b border-slate-100 text-xs font-bold text-primary uppercase tracking-wider">
                 <th className="pb-3">NIS</th>
+                <th className="pb-3">Foto</th>
                 <th className="pb-3">Nama Siswa</th>
                 <th className="pb-3">QR</th>
                 <th className="pb-3">Kelas</th>
@@ -184,6 +227,13 @@ export default function AdminSiswaPage() {
               ) : siswa.map((s, idx) => (
                 <tr key={idx} className="text-xs hover:bg-slate-50">
                   <td className="py-4 font-mono font-bold text-accent-dark">{s.nis}</td>
+                  <td className="py-4">
+                    {s.foto ? (
+                      <img src={s.foto} alt={s.nama_lengkap} className="h-10 w-10 rounded-lg object-cover border border-wedding-pink/20" />
+                    ) : (
+                      <div className="h-10 w-10 rounded-lg bg-slate-200 flex items-center justify-center text-[10px] text-slate-500">-</div>
+                    )}
+                  </td>
                   <td className="py-4 font-bold text-primary text-sm">{s.nama_lengkap}</td>
                   <td className="py-4">
                     {s.qrcode ? (
@@ -226,6 +276,32 @@ export default function AdminSiswaPage() {
               </button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-6 p-6">
+              {/* Foto Upload Section */}
+              <div className="space-y-3">
+                <label className="text-xs font-semibold text-slate-700">Foto Siswa</label>
+                <div className="flex gap-4">
+                  {(fotoPreview || formData.foto) && (
+                    <img
+                      src={fotoPreview || formData.foto}
+                      alt="Preview"
+                      className="h-24 w-24 rounded-xl border-2 border-wedding-pink/30 object-cover"
+                    />
+                  )}
+                  <div className="flex-1 space-y-2">
+                    <label className="flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-wedding-pink/30 px-4 py-6 cursor-pointer hover:border-accent hover:bg-accent/5 transition-colors">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFotoChange}
+                        className="hidden"
+                      />
+                      <span className="text-xs font-semibold text-slate-600">Pilih Foto (JPG, PNG, WebP - Max 5MB)</span>
+                    </label>
+                    {fotoFile && <p className="text-xs text-accent font-medium">✓ {fotoFile.name}</p>}
+                  </div>
+                </div>
+              </div>
+
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="space-y-2 text-xs font-semibold text-slate-700">
                   NIS

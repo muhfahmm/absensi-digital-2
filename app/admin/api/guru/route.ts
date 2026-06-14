@@ -35,6 +35,7 @@ export async function POST(req: Request) {
       alamat,
       telepon,
       email,
+      foto,
       mapel_id,
       username,
       password,
@@ -72,7 +73,7 @@ export async function POST(req: Request) {
     }
 
     const result: any = await query(
-      `INSERT INTO tb_guru (nip, nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, telepon, email, mata_pelajaran, username, password, is_aktif, qrcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO tb_guru (nip, nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, telepon, email, foto, mata_pelajaran, username, password, is_aktif, qrcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         nip,
         nama_lengkap,
@@ -81,6 +82,7 @@ export async function POST(req: Request) {
         alamat || "",
         telepon || "",
         email || "",
+        foto || "",
         selectedMapelName,
         finalUsername,
         finalPassword,
@@ -101,6 +103,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Failed to create data" }, { status: 500 });
   }
 }
+    return NextResponse.json({ error: "Failed to create data" }, { status: 500 });
+  }
+}
 
 export async function PUT(req: Request) {
   const auth = await requireSuperadmin();
@@ -116,6 +121,7 @@ export async function PUT(req: Request) {
       alamat,
       telepon,
       email,
+      foto,
       mapel_id,
       username,
       password,
@@ -134,7 +140,7 @@ export async function PUT(req: Request) {
       selectedMapelName = mapelRows[0]?.nama || "";
     }
 
-    let sql = `UPDATE tb_guru SET nip = ?, nama_lengkap = ?, jenis_kelamin = ?, tanggal_lahir = ?, alamat = ?, telepon = ?, email = ?, mata_pelajaran = ?, username = ?, is_aktif = ?`;
+    let sql = `UPDATE tb_guru SET nip = ?, nama_lengkap = ?, jenis_kelamin = ?, tanggal_lahir = ?, alamat = ?, telepon = ?, email = ?, foto = ?, mata_pelajaran = ?, username = ?, is_aktif = ?`;
     const params = [
       nip,
       nama_lengkap,
@@ -143,6 +149,7 @@ export async function PUT(req: Request) {
       alamat || "",
       telepon || "",
       email || "",
+      foto || "",
       selectedMapelName,
       finalUsername,
       is_aktif !== undefined ? is_aktif : 1

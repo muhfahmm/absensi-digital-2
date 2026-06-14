@@ -39,6 +39,7 @@ export async function POST(req: Request) {
       alamat,
       telepon_ortu,
       email,
+      foto,
       kelas_id,
       username,
       password
@@ -68,7 +69,7 @@ export async function POST(req: Request) {
     }
 
     const result: any = await query(
-      `INSERT INTO tb_siswa (nis, nama_lengkap, jenis_kelamin, tanggal_lahir, tempat_lahir, alamat, telepon_ortu, email, kelas_id, username, password, qrcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO tb_siswa (nis, nama_lengkap, jenis_kelamin, tanggal_lahir, tempat_lahir, alamat, telepon_ortu, email, foto, kelas_id, username, password, qrcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         nis,
         nama_lengkap,
@@ -78,6 +79,7 @@ export async function POST(req: Request) {
         alamat || "",
         telepon_ortu || "",
         email || "",
+        foto || "",
         kelas_id || null,
         finalUsername,
         finalPassword,
@@ -112,6 +114,7 @@ export async function PUT(req: Request) {
     const alamat = body.alamat;
     const telepon_ortu = body.telepon_ortu;
     const email = body.email;
+    const foto = body.foto;
     const kelas_id = body.kelas_id;
     const username = body.username;
     const password = body.password;
@@ -122,7 +125,7 @@ export async function PUT(req: Request) {
 
     const finalUsername = username || nis;
 
-    let sql = `UPDATE tb_siswa SET nis = ?, nama_lengkap = ?, jenis_kelamin = ?, tanggal_lahir = ?, tempat_lahir = ?, alamat = ?, telepon_ortu = ?, email = ?, kelas_id = ?, username = ?`;
+    let sql = `UPDATE tb_siswa SET nis = ?, nama_lengkap = ?, jenis_kelamin = ?, tanggal_lahir = ?, tempat_lahir = ?, alamat = ?, telepon_ortu = ?, email = ?, foto = ?, kelas_id = ?, username = ?`;
     const params = [
       nis,
       nama_lengkap,
@@ -132,6 +135,7 @@ export async function PUT(req: Request) {
       alamat || "",
       telepon_ortu || "",
       email || "",
+      foto || "",
       kelas_id || null,
       finalUsername
     ];
