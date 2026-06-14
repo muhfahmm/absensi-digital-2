@@ -30,7 +30,7 @@ export default function AdminGuruPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/guru");
+      const res = await fetch("/admin/api/guru");
       const data = await res.json();
       setGuru(data || []);
     } catch (err) {
@@ -91,7 +91,7 @@ export default function AdminGuruPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus data guru ini?")) return;
     try {
-      const res = await fetch(`/api/guru?id=${id}`, { method: "DELETE" });
+      const res = await fetch(`/admin/api/guru?id=${id}`, { method: "DELETE" });
       if (res.ok) {
         fetchData();
       } else {
@@ -109,7 +109,7 @@ export default function AdminGuruPage() {
     setSubmitLoading(true);
 
     try {
-      const url = "/api/guru";
+      const url = "/admin/api/guru";
       const method = isEditMode ? "PUT" : "POST";
       const res = await fetch(url, {
         method,

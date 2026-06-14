@@ -23,7 +23,7 @@ export default function AbsensiPage() {
       if (kelasId) params.append("kelas_id", kelasId);
       if (mataPelajaranId) params.append("mata_pelajaran_id", mataPelajaranId);
       if (searchQuery) params.append("query", searchQuery);
-      const url = `/api/absensi${params.toString() ? `?${params.toString()}` : ""}`;
+      const url = `/admin/api/absensi${params.toString() ? `?${params.toString()}` : ""}`;
 
       const res = await fetch(url);
       const text = await res.text();
@@ -74,8 +74,8 @@ export default function AbsensiPage() {
   const fetchFilters = async () => {
     try {
       const [kelasRes, mapelRes] = await Promise.all([
-        fetch("/api/kelas").then(res => res.json()),
-        fetch("/api/mapel").then(res => res.json())
+        fetch("/admin/api/kelas").then(res => res.json()),
+        fetch("/admin/api/mapel").then(res => res.json())
       ]);
       setKelas(kelasRes || []);
       setMapel(mapelRes || []);

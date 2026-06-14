@@ -27,8 +27,8 @@ export default function MapelPage() {
     setLoading(true);
     try {
       const [resMapel, resGuru] = await Promise.all([
-        fetch("/api/mapel").then(res => res.json()),
-        fetch("/api/guru").then(res => res.json())
+        fetch("/admin/api/mapel").then(res => res.json()),
+        fetch("/admin/api/guru").then(res => res.json())
       ]);
       setMapel(resMapel || []);
       setGurus(resGuru || []);
@@ -74,7 +74,7 @@ export default function MapelPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus mata pelajaran ini?")) return;
     try {
-      const res = await fetch(`/api/mapel?id=${id}`, {
+      const res = await fetch(`/admin/api/mapel?id=${id}`, {
         method: "DELETE"
       });
       if (res.ok) {
@@ -94,7 +94,7 @@ export default function MapelPage() {
     setSubmitLoading(true);
 
     try {
-      const url = "/api/mapel";
+      const url = "/admin/api/mapel";
       const method = isEditMode ? "PUT" : "POST";
       const res = await fetch(url, {
         method,

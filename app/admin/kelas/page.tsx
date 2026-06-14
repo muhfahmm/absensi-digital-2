@@ -27,8 +27,8 @@ export default function AdminKelasPage() {
     setLoading(true);
     try {
       const [resKelas, resGuru] = await Promise.all([
-        fetch("/api/kelas").then(res => res.json()),
-        fetch("/api/guru").then(res => res.json())
+        fetch("/admin/api/kelas").then(res => res.json()),
+        fetch("/admin/api/guru").then(res => res.json())
       ]);
       setKelas(resKelas || []);
       setGurus(resGuru || []);
@@ -76,7 +76,7 @@ export default function AdminKelasPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus kelas ini?")) return;
     try {
-      const res = await fetch(`/api/kelas?id=${id}`, {
+      const res = await fetch(`/admin/api/kelas?id=${id}`, {
         method: "DELETE"
       });
       if (res.ok) {
@@ -96,7 +96,7 @@ export default function AdminKelasPage() {
     setSubmitLoading(true);
 
     try {
-      const url = "/api/kelas";
+      const url = "/admin/api/kelas";
       const method = isEditMode ? "PUT" : "POST";
       const res = await fetch(url, {
         method,

@@ -8,7 +8,7 @@ export default function AdminPerizinanPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/perizinan")
+    fetch("/admin/api/perizinan")
       .then(res => res.json())
       .then(data => {
         setPerizinan(data || []);

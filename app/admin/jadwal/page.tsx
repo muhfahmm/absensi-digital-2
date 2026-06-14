@@ -34,10 +34,10 @@ export default function JadwalPage() {
     setLoading(true);
     try {
       const [resJadwal, resKelas, resMapel, resGuru] = await Promise.all([
-        fetch("/api/jadwal").then(res => res.json()),
-        fetch("/api/kelas").then(res => res.json()),
-        fetch("/api/mapel").then(res => res.json()),
-        fetch("/api/guru").then(res => res.json())
+        fetch("/admin/api/jadwal").then(res => res.json()),
+        fetch("/admin/api/kelas").then(res => res.json()),
+        fetch("/admin/api/mapel").then(res => res.json()),
+        fetch("/admin/api/guru").then(res => res.json())
       ]);
       setJadwal(resJadwal || []);
       setKelas(resKelas || []);
@@ -89,7 +89,7 @@ export default function JadwalPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus jadwal ini?")) return;
     try {
-      const res = await fetch(`/api/jadwal?id=${id}`, {
+      const res = await fetch(`/admin/api/jadwal?id=${id}`, {
         method: "DELETE"
       });
       if (res.ok) {
@@ -109,7 +109,7 @@ export default function JadwalPage() {
     setSubmitLoading(true);
 
     try {
-      const url = "/api/jadwal";
+      const url = "/admin/api/jadwal";
       const method = isEditMode ? "PUT" : "POST";
       const res = await fetch(url, {
         method,

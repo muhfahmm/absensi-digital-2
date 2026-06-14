@@ -8,7 +8,7 @@ export default function PengaturanPage() {
   const [loading, setLoading] = useState(true);
 
   React.useEffect(() => {
-    fetch("/api/pengaturan")
+    fetch("/admin/api/pengaturan")
       .then(res => res.json())
       .then(data => {
         const settingsObj: any = {};

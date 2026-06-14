@@ -32,8 +32,8 @@ export default function AdminSiswaPage() {
     setLoading(true);
     try {
       const [resSiswa, resKelas] = await Promise.all([
-        fetch("/api/siswa").then((res) => res.json()),
-        fetch("/api/kelas").then((res) => res.json())
+        fetch("/admin/api/siswa").then((res) => res.json()),
+        fetch("/admin/api/kelas").then((res) => res.json())
       ]);
       setSiswa(resSiswa || []);
       setKelas(resKelas || []);
@@ -95,7 +95,7 @@ export default function AdminSiswaPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus siswa ini?")) return;
     try {
-      const res = await fetch(`/api/siswa?id=${id}`, { method: "DELETE" });
+      const res = await fetch(`/admin/api/siswa?id=${id}`, { method: "DELETE" });
       if (res.ok) {
         fetchData();
       } else {
@@ -113,7 +113,7 @@ export default function AdminSiswaPage() {
     setSubmitLoading(true);
 
     try {
-      const url = "/api/siswa";
+      const url = "/admin/api/siswa";
       const method = isEditMode ? "PUT" : "POST";
       const res = await fetch(url, {
         method,

@@ -8,7 +8,7 @@ export default function PengumumanPage() {
   const [loading, setLoading] = useState(true);
 
   React.useEffect(() => {
-    fetch("/api/pengumuman")
+    fetch("/admin/api/pengumuman")
       .then(res => res.json())
       .then(data => {
         setPengumuman(data || []);

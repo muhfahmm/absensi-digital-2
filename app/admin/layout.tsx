@@ -20,7 +20,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       return;
     }
     
-    fetch('/api/auth/me')
+    fetch('/admin/api/auth/me')
       .then(res => res.json())
       .then(data => {
         if (data.user) {
@@ -35,7 +35,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
-    await fetch('/api/auth/logout', { method: 'POST' });
+    await fetch('/admin/api/auth/logout', { method: 'POST' });
     setUser(null);
     router.push('/admin/auth/login');
   };

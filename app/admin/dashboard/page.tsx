@@ -22,7 +22,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    fetch("/api/dashboard")
+    fetch("/admin/api/dashboard")
       .then(res => res.json())
       .then(resData => {
         setData(resData);

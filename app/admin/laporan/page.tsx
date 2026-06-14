@@ -8,7 +8,7 @@ export default function LaporanPage() {
   const [loading, setLoading] = useState(true);
 
   React.useEffect(() => {
-    fetch("/api/laporan")
+    fetch("/admin/api/laporan")
       .then(res => res.json())
       .then(data => {
         setDataLaporan(data || []);
