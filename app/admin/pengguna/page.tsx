@@ -27,10 +27,17 @@ export default function AdminPenggunaPage() {
     const fetchAdmins = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/pengguna?role=${selectedRole}`);
+        const res = await fetch(`/api/pengguna?role=${selectedRole}`, { credentials: 'include' });
         if (!res.ok) {
-          const text = await res.text();
-          throw new Error(text || res.statusText);
+          let errMsg = res.statusText;
+          try {
+            const j = await res.json();
+            errMsg = j?.error || errMsg;
+          } catch (_) {
+            const t = await res.text();
+            if (t) errMsg = t;
+          }
+          throw new Error(errMsg);
         }
         const json = await res.json();
         setAdmins(json.admins || []);
@@ -72,7 +79,7 @@ export default function AdminPenggunaPage() {
 
       setIsModalOpen(false);
       setFormData({ username: '', nama_lengkap: '', password: '' });
-      const refresh = await fetch(`/api/pengguna?role=${selectedRole}`);
+      const refresh = await fetch(`/api/pengguna?role=${selectedRole}`, { credentials: 'include' });
       const refreshed = await refresh.json();
       setAdmins(refreshed.admins || []);
     } catch (error: any) {
