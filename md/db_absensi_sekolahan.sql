@@ -1,14 +1,14 @@
 -- ============================================================
---  DATABASE : db_sekolah_absensi
+--  DATABASE : db_absensi_sekolahan
 --  Aplikasi  : Absensi Digital Sekolah
 --  Versi     : 1.0.0
 -- ============================================================
 
-CREATE DATABASE IF NOT EXISTS db_sekolah_absensi
+CREATE DATABASE IF NOT EXISTS db_absensi_sekolahan
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE db_sekolah_absensi;
+USE db_absensi_sekolahan;
 
 -- ============================================================
 --  1. ADMIN
@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS tb_guru (
   telepon         VARCHAR(20)   NOT NULL DEFAULT '',
   email           VARCHAR(100)  NOT NULL DEFAULT '',
   foto            VARCHAR(255)  NOT NULL DEFAULT '',
+  qrcode          VARCHAR(255)  NULL DEFAULT NULL UNIQUE,
   mata_pelajaran  VARCHAR(100)  NOT NULL DEFAULT '',
   jabatan         VARCHAR(100)  NOT NULL DEFAULT '',
   status          ENUM('PNS','Honorer','GTT') NOT NULL DEFAULT 'Honorer',
@@ -90,6 +91,7 @@ CREATE TABLE IF NOT EXISTS tb_siswa (
   telepon_ortu    VARCHAR(20)   NOT NULL DEFAULT '',
   email           VARCHAR(100)  NOT NULL DEFAULT '',
   foto            VARCHAR(255)  NOT NULL DEFAULT '',
+  qrcode          VARCHAR(255)  NULL DEFAULT NULL UNIQUE,
   kelas_id        INT UNSIGNED  NULL,
   -- tahun_ajaran_id column removed as per user request
   username        VARCHAR(50)   NOT NULL UNIQUE,

@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { query } from "@/app/config/db";
 import { requireSuperadmin } from '@/app/lib/auth';
+import { randomUUID } from 'crypto';
+import fs from 'fs/promises';
+import path from 'path';
+import QRCode from 'qrcode';
 
 export async function GET() {
   try {
@@ -19,6 +23,8 @@ export async function GET() {
 export async function POST(req: Request) {
   const auth = await requireSuperadmin();
   if (auth) return auth;
+  let fileName: string | null = null;
+  let filePath: string | null = null;
   try {
     const body = await req.json();
     const {
@@ -44,8 +50,25 @@ export async function POST(req: Request) {
     const finalUsername = username || nip;
     const finalPassword = password || "guru123";
 
+    const qrcode = randomUUID();
+
+    // ensure qrcodes directory exists
+    const qrcodesDir = path.join(process.cwd(), 'public', 'qrcodes');
+    try {
+      await fs.mkdir(qrcodesDir, { recursive: true });
+    } catch (e) {}
+
+    // generate png file for QR code
+    fileName = `${qrcode}.png`;
+    filePath = path.join(qrcodesDir, fileName);
+    try {
+      await QRCode.toFile(filePath, qrcode, { type: 'png', width: 300 });
+    } catch (err) {
+      console.error('Failed to generate QR image:', err);
+    }
+
     const result: any = await query(
-      `INSERT INTO tb_guru (nip, nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, telepon, email, mata_pelajaran, jabatan, status, username, password, is_aktif) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO tb_guru (nip, nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, telepon, email, mata_pelajaran, jabatan, status, username, password, is_aktif, qrcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         nip,
         nama_lengkap,
@@ -59,13 +82,17 @@ export async function POST(req: Request) {
         status || "Honorer",
         finalUsername,
         finalPassword,
-        is_aktif !== undefined ? is_aktif : 1
+        is_aktif !== undefined ? is_aktif : 1,
+        fileName
       ]
     );
-
-    return NextResponse.json({ success: true, id: result.insertId });
+    return NextResponse.json({ success: true, id: result.insertId, qrcode: fileName, qrcode_url: `/qrcodes/${fileName}` });
   } catch (error: any) {
     console.error("Failed to create guru:", error);
+    // cleanup generated file if DB insert failed
+    try {
+      if (filePath) await fs.unlink(filePath).catch(() => {});
+    } catch (e) {}
     if (error.code === "ER_DUP_ENTRY") {
       return NextResponse.json({ error: "NIP atau Username sudah digunakan" }, { status: 400 });
     }

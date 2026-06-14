@@ -168,6 +168,7 @@ export default function AdminSiswaPage() {
               <tr className="border-b border-slate-100 text-xs font-bold text-primary uppercase tracking-wider">
                 <th className="pb-3">NIS</th>
                 <th className="pb-3">Nama Siswa</th>
+                <th className="pb-3">QR</th>
                 <th className="pb-3">Kelas</th>
                 <th className="pb-3">Telepon</th>
                 <th className="pb-3">Status</th>
@@ -176,10 +177,10 @@ export default function AdminSiswaPage() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
-                <tr><td colSpan={6} className="py-4 text-center text-slate-500">Memuat data...</td></tr>
+                <tr><td colSpan={7} className="py-4 text-center text-slate-500">Memuat data...</td></tr>
               ) : siswa.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-500 space-y-4">
+                  <td colSpan={7} className="py-8 text-center text-slate-500 space-y-4">
                     <div>Belum ada siswa yang terdaftar.</div>
                     <button onClick={openAddModal} className="inline-flex items-center gap-2 rounded-xl bg-[#1e3a5f] px-4 py-2 text-xs font-bold text-white hover:bg-[#1b3650] transition-colors">
                       <Plus size={14} />
@@ -188,9 +189,18 @@ export default function AdminSiswaPage() {
                   </td>
                 </tr>
               ) : siswa.map((s, idx) => (
-                <tr key={idx} className="text-xs hover:bg-slate-50/50">
+                <tr key={idx} className="text-xs hover:bg-slate-50">
                   <td className="py-4 font-mono font-bold text-accent-dark">{s.nis}</td>
                   <td className="py-4 font-bold text-primary text-sm">{s.nama_lengkap}</td>
+                  <td className="py-4">
+                    {s.qrcode ? (
+                      <a href={`/qrcodes/${s.qrcode}`} target="_blank" rel="noreferrer">
+                        <img src={`/qrcodes/${s.qrcode}`} alt="QR" className="w-10 h-10 object-cover rounded" />
+                      </a>
+                    ) : (
+                      <span className="text-slate-400">-</span>
+                    )}
+                  </td>
                   <td className="py-4 font-semibold text-slate-600">{s.nama_kelas || '-'}</td>
                   <td className="py-4 font-semibold text-slate-600">{s.telepon_ortu || '-'}</td>
                   <td className="py-4">
