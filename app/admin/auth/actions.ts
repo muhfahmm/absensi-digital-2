@@ -6,7 +6,8 @@ import * as argon2 from 'argon2';
 export async function handleRegister(formData: FormData) {
   const username = formData.get('username') as string;
   const password = formData.get('password') as string;
-  const role = (formData.get('role') as string) || 'admin';
+  // Force role to superadmin for this registration endpoint
+  const role = 'superadmin';
 
   if (!username || !password) {
     return { error: 'Username dan password wajib diisi' };
@@ -25,8 +26,8 @@ export async function handleRegister(formData: FormData) {
       return { error: 'Username sudah digunakan oleh guru' };
     }
 
-    // Insert admin baru ke database
-    if (!['admin', 'superadmin'].includes(role)) {
+    // Insert admin baru ke database (only superadmin allowed here)
+    if (role !== 'superadmin') {
       return { error: 'Role tidak valid' };
     }
 
