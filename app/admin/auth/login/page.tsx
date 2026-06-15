@@ -39,7 +39,14 @@ export default function LoginPage() {
         body: JSON.stringify({ username, password })
       });
 
-      const data = await res.json();
+      let data: any;
+      try {
+        data = await res.json();
+      } catch (parseError) {
+        const text = await res.text();
+        console.error('Login response parse error:', parseError, text);
+        throw new Error('Login gagal: respons server tidak valid');
+      }
 
       if (!res.ok) {
         throw new Error(data.error || 'Login gagal');

@@ -8,8 +8,13 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get('auth_token')?.value;
   const { pathname } = request.nextUrl;
 
+  const isApiRoute = pathname.startsWith('/admin/api');
   const isAuthPage = pathname.startsWith('/admin/auth');
   const isAdminPage = pathname.startsWith('/admin');
+
+  if (isApiRoute) {
+    return NextResponse.next();
+  }
 
   if (isAdminPage) {
     if (!token) {
