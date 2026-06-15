@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "Absensi Digital Mobile",
+    "slug": "absensi-digital-mobile",
+    "version": "1.0.0",
+    "sdkVersion": "49.0.0",
+    "platforms": ["ios", "android", "web"],
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#f8fafc",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#f8fafc"
+      }
+    },
+    "web": {
+      "favicon": "./favicon.png"
+    }
+  }
+}
