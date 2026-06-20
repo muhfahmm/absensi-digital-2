@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   Bell,
   CalendarDays,
@@ -102,9 +101,9 @@ export default function MobileHomePage() {
 
         <section className="grid gap-3 sm:grid-cols-2">
           {menuItems.map((item) => {
-            const Icon = item.icon;
+            const Icon = item.icon as any;
             return (
-              <Link
+              <a
                 key={item.title}
                 href={item.href}
                 className="group overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 text-left transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg"
@@ -119,7 +118,7 @@ export default function MobileHomePage() {
                 </div>
                 <h2 className="mt-4 text-base font-semibold text-slate-950">{item.title}</h2>
                 <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
-              </Link>
+              </a>
             );
           })}
         </section>
